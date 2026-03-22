@@ -24,6 +24,12 @@ export default function RepresentantesPage() {
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState("")
 
+  // Determinar las keys del objeto docente dinámicamente
+  const docenteKeyId = docentes[0] ? Object.keys(docentes[0])[0] : ""
+  const docenteKeyNombre = docentes[0]
+    ? Object.keys(docentes[0]).find(k => k.toLowerCase().includes("nombre")) ?? Object.keys(docentes[0])[1] ?? ""
+    : ""
+
   useEffect(() => { cargarDatos() }, [])
 
   async function cargarDatos() {
@@ -63,7 +69,7 @@ export default function RepresentantesPage() {
   function nuevoFormulario() {
     setSeleccionado(null)
     const primeraCarrera = carreras[0]?.Clave ?? ""
-    const primerDocente = docentes[0] ? Object.values(docentes[0])[0] : ""
+    const primerDocente = docentes[0] && docenteKeyId ? docentes[0][docenteKeyId] : ""
     const primerPerfil = String(perfiles[0]?.intClvPerfilPROMEP ?? "")
     setForm({ claveTrab: primerDocente, perfil: primerPerfil, carrera: primeraCarrera })
     setModo("nuevo")
@@ -89,12 +95,6 @@ export default function RepresentantesPage() {
     }
     setGuardando(false)
   }
-
-  // Determinar las keys del objeto docente dinámicamente
-  const docenteKeyId = docentes[0] ? Object.keys(docentes[0])[0] : ""
-  const docenteKeyNombre = docentes[0]
-    ? Object.keys(docentes[0]).find(k => k.toLowerCase().includes("nombre")) ?? Object.keys(docentes[0])[1] ?? ""
-    : ""
 
   return (
     <DashboardLayout role="enlace">
@@ -148,8 +148,8 @@ export default function RepresentantesPage() {
                 value={form.claveTrab}
                 onChange={(e) => setForm(f => ({ ...f, claveTrab: e.target.value }))}
               >
-                {docentes.map((d, i) => (
-                  <option key={i} value={d[docenteKeyId]}>{d[docenteKeyNombre]}</option>
+                {docentes.map((d) => (
+                  <option key={d[docenteKeyId]} value={d[docenteKeyId]}>{d[docenteKeyNombre]}</option>
                 ))}
               </select>
             </div>

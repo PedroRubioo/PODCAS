@@ -1,7 +1,6 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import sql from "mssql";
 
 export async function GET() {
   try {

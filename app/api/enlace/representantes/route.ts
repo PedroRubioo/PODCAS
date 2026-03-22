@@ -72,7 +72,7 @@ export async function POST(request: Request) {
 
     const codRetorno = result.output.CodRetorno;
     if (codRetorno > 0)
-      return NextResponse.json({ success: false, error: "El trabajador ya está registrado como representante." });
+      return NextResponse.json({ success: false, error: "El trabajador ya está registrado como representante." }, { status: 409 });
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -93,6 +93,10 @@ export async function PUT(request: Request) {
     if (!id || !claveTrab || !perfil || !carrera)
       return NextResponse.json({ success: false, error: "Faltan datos requeridos" }, { status: 400 });
 
+    const idNum = Number.parseInt(id);
+    if (!Number.isFinite(idNum))
+      return NextResponse.json({ success: false, error: "ID inválido" }, { status: 400 });
+
     const pool = await getConnection();
 
     // Verificar que no sea ya representante en esa carrera (distinto registro)
@@ -109,7 +113,7 @@ export async function PUT(request: Request) {
       .input("trab", sql.VarChar, claveTrab)
       .input("perfil", sql.VarChar, perfil)
       .input("carrera", sql.VarChar, carrera)
-      .input("id", sql.Int, parseInt(id))
+      .input("id", sql.Int, idNum)
       .query(`UPDATE tbl_CA_CATrabajador
               SET vchClvTrabajador = @trab, intClvPerfilPROMEP = @perfil,
                   dtmFchRegistro = GETDATE(), chrCarrera = @carrera
