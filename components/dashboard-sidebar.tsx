@@ -205,6 +205,16 @@ const roleConfig: Record<
       },
     ],
   },
+  enlace: {
+    label: "Enlace Académico",
+    description: "Supervision y gestion institucional",
+    items: [
+      { label: "Dashboard", href: "/dashboard/enlace", icon: LayoutDashboard },
+      { label: "Representantes", href: "/dashboard/enlace/representantes", icon: UserCheck },
+      { label: "Datos de Miembros", href: "/dashboard/enlace/miembros", icon: Users },
+      { label: "Visor de Produccion", href: "/dashboard/enlace/produccion", icon: Eye },
+    ],
+  },
   miembro: {
     label: "Miembro de C.A.",
     description: "Participacion en cuerpo academico",
