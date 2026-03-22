@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, DM_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AuthSessionProvider } from '@/components/session-provider'
 import './globals.css'
 
 const _playfair = Playfair_Display({
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${_playfair.variable} ${_dmSans.variable} font-sans antialiased`}>
-        {children}
+        <AuthSessionProvider>
+          {children}
+        </AuthSessionProvider>
         <Analytics />
       </body>
     </html>

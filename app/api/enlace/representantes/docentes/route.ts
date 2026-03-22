@@ -18,7 +18,15 @@ export async function GET(request: Request) {
       .input("clave", sql.VarChar, clave)
       .execute("sp_CA_ObtenerDocentesPorCarrera");
 
-    return NextResponse.json({ success: true, data: result.recordset });
+    // El SP devuelve "Numero de acceso" y "Nombre Trabajador" — normalizamos a campos fijos
+    const data = result.recordset.map((row: any) => {
+      const keys = Object.keys(row);
+      const idKey = keys.find(k => !k.toLowerCase().includes("nombre")) ?? keys[0];
+      const nombreKey = keys.find(k => k.toLowerCase().includes("nombre")) ?? keys[1] ?? keys[0];
+      return { id: String(row[idKey] ?? ""), nombre: String(row[nombreKey] ?? "") };
+    });
+
+    return NextResponse.json({ success: true, data });
   } catch (error) {
     return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
   }

@@ -10,7 +10,7 @@ type Representante = {
 }
 type Perfil = { intClvPerfilPROMEP: number; vchNombrePerfil: string }
 type Carrera = { Clave: string; Carrera: string }
-type Docente = Record<string, string>
+type Docente = { id: string; nombre: string }
 
 export default function RepresentantesPage() {
   const [lista, setLista] = useState<Representante[]>([])
@@ -23,12 +23,6 @@ export default function RepresentantesPage() {
   const [msg, setMsg] = useState("")
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState("")
-
-  // Determinar las keys del objeto docente dinámicamente
-  const docenteKeyId = docentes[0] ? Object.keys(docentes[0])[0] : ""
-  const docenteKeyNombre = docentes[0]
-    ? Object.keys(docentes[0]).find(k => k.toLowerCase().includes("nombre")) ?? Object.keys(docentes[0])[1] ?? ""
-    : ""
 
   useEffect(() => { cargarDatos() }, [])
 
@@ -69,7 +63,7 @@ export default function RepresentantesPage() {
   function nuevoFormulario() {
     setSeleccionado(null)
     const primeraCarrera = carreras[0]?.Clave ?? ""
-    const primerDocente = docentes[0] && docenteKeyId ? docentes[0][docenteKeyId] : ""
+    const primerDocente = docentes[0]?.id ?? ""
     const primerPerfil = String(perfiles[0]?.intClvPerfilPROMEP ?? "")
     setForm({ claveTrab: primerDocente, perfil: primerPerfil, carrera: primeraCarrera })
     setModo("nuevo")
@@ -149,7 +143,7 @@ export default function RepresentantesPage() {
                 onChange={(e) => setForm(f => ({ ...f, claveTrab: e.target.value }))}
               >
                 {docentes.map((d) => (
-                  <option key={d[docenteKeyId]} value={d[docenteKeyId]}>{d[docenteKeyNombre]}</option>
+                  <option key={d.id} value={d.id}>{d.nombre}</option>
                 ))}
               </select>
             </div>

@@ -15,7 +15,7 @@ const config: sql.config = {
 let pool: sql.ConnectionPool | null = null;
 
 export async function getConnection(): Promise<sql.ConnectionPool> {
-  if (pool) return pool;
+  if (pool && pool.connected) return pool;
   pool = await sql.connect(config);
   return pool;
 }
