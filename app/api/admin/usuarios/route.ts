@@ -1,7 +1,13 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
+import sql from "mssql";
+import { apiError, checkOrigin, requireRole } from "@/lib/api-helpers";
+import { ROLE } from "@/lib/roles";
 
 export async function GET() {
+  const session = await requireRole([ROLE.ADMIN]);
+  if (!session.ok) return session.response;
+
   try {
     const pool = await getConnection();
     const result = await pool.request().query(`
@@ -16,7 +22,7 @@ export async function GET() {
         p.vchNombrePerfil AS perfil,
         t.intClvTipoUsuario,
         t.dtmFchRegistro,
-        t.dtmFchRegistroVencimiento
+        t.dtmFchVencimientoPROMEP AS dtmFchRegistroVencimiento
       FROM tbl_CA_CATrabajador t
       INNER JOIN tblTrabajadores trab ON t.vchClvTrabajador = trab.vchClvTrabajador
       LEFT JOIN tbl_CA_PerfilesPROMEP p ON t.intClvPerfilPROMEP = p.intClvPerfilPROMEP
@@ -25,46 +31,63 @@ export async function GET() {
     `);
     return NextResponse.json({ success: true, data: result.recordset });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: String(error) },
-      { status: 500 },
-    );
+    return apiError(error, "GET /api/admin/usuarios");
   }
 }
 
 export async function POST(request: Request) {
+  const session = await requireRole([ROLE.ADMIN]);
+  if (!session.ok) return session.response;
+  if (!checkOrigin(request)) {
+    return NextResponse.json(
+      { success: false, error: "Origen no permitido" },
+      { status: 403 },
+    );
+  }
+
   try {
     const body = await request.json();
-    const { clave, fecha, perfil, claveCA, tipoUser, carrera, fechaReg, fechaVenc } = body;
-    const pool = await getConnection();
+    const clave = typeof body.clave === "string" ? body.clave : "";
+    const fecha = typeof body.fecha === "string" ? body.fecha : "";
+    const perfilNum = Number.parseInt(String(body.perfil ?? ""));
+    const claveCA = typeof body.claveCA === "string" ? body.claveCA : "";
+    const tipoUser = typeof body.tipoUser === "string" ? body.tipoUser : "";
+    const carrera = typeof body.carrera === "string" ? body.carrera : "";
+    const fechaReg = typeof body.fechaReg === "string" ? body.fechaReg : "";
+    const fechaVenc = typeof body.fechaVenc === "string" ? body.fechaVenc : "";
 
+    if (!clave || !tipoUser || !carrera || !Number.isFinite(perfilNum)) {
+      return NextResponse.json(
+        { success: false, error: "Datos incompletos" },
+        { status: 400 },
+      );
+    }
+
+    const pool = await getConnection();
     const sp = tipoUser === "2" ? "sp_CA_RegistrarRepresentante" : "sp_CA_RegistrarMiembro";
 
     const result = await pool
       .request()
-      .input("clave", clave)
-      .input("fecha", fecha)
-      .input("perfil", parseInt(perfil))
-      .input("clave_CA", claveCA)
-      .input("tipoUser", parseInt(tipoUser))
-      .input("chrCarrera", carrera)
-      .input("FechPReg", new Date(fechaReg))
-      .input("FechPVen", new Date(fechaVenc))
-      .output("CodRetorno", 0)
+      .input("clave", sql.VarChar, clave)
+      .input("fecha", sql.VarChar, fecha)
+      .input("perfil", sql.Int, perfilNum)
+      .input("clave_CA", sql.VarChar, claveCA)
+      .input("tipoUser", sql.Int, Number.parseInt(tipoUser))
+      .input("chrCarrera", sql.VarChar, carrera)
+      .input("FechPReg", sql.DateTime, new Date(fechaReg))
+      .input("FechPVen", sql.DateTime, new Date(fechaVenc))
+      .output("CodRetorno", sql.Int, 0)
       .execute(sp);
 
     const codRetorno = result.output.CodRetorno;
     if (codRetorno > 0) {
       return NextResponse.json(
         { success: false, error: "El trabajador ya está registrado en este cuerpo académico." },
-        { status: 400 },
+        { status: 409 },
       );
     }
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: String(error) },
-      { status: 500 },
-    );
+    return apiError(error, "POST /api/admin/usuarios");
   }
 }

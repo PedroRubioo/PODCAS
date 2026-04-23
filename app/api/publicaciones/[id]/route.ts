@@ -1,13 +1,27 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
+import sql from "mssql";
+import { apiError } from "@/lib/api-helpers";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } },
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
+    const idNum = Number.parseInt(id);
+    if (!Number.isFinite(idNum) || idNum <= 0) {
+      return NextResponse.json(
+        { success: false, error: "ID inválido" },
+        { status: 400 },
+      );
+    }
+
     const pool = await getConnection();
-    const result = await pool.request().input("id", parseInt(params.id)).query(`
+    const result = await pool
+      .request()
+      .input("id", sql.Int, idNum)
+      .query(`
         SELECT
           intClvPublicacion,
           vchNombrePublicacion,
@@ -32,9 +46,6 @@ export async function GET(
     }
     return NextResponse.json({ success: true, data: result.recordset[0] });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: String(error) },
-      { status: 500 },
-    );
+    return apiError(error, "GET /api/publicaciones/[id]");
   }
 }

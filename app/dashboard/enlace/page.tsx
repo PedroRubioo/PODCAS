@@ -3,6 +3,7 @@
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { UserCheck, Users, Eye, Upload, User } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useEffect, useState, useRef } from "react"
 
 type Perfil = {
@@ -19,10 +20,12 @@ export default function EnlaceDashboard() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    fetch("/api/enlace/perfil")
+    const ctrl = new AbortController()
+    fetch("/api/enlace/perfil", { signal: ctrl.signal })
       .then((r) => r.json())
       .then((d) => { if (d.success) setPerfil(d.data); else setMsg("Error al cargar perfil") })
-      .catch(() => setMsg("Error al cargar perfil"))
+      .catch((e) => { if (e.name !== "AbortError") setMsg("Error al cargar perfil") })
+    return () => ctrl.abort()
   }, [])
 
   async function subirFoto(file: File) {
@@ -30,18 +33,22 @@ export default function EnlaceDashboard() {
     setMsg("")
     const fd = new FormData()
     fd.append("imagen", file)
-    const r = await fetch("/api/enlace/perfil", { method: "PUT", body: fd })
-    const d = await r.json()
-    if (d.success) {
-      setMsg("Foto actualizada.")
-      setPerfil((p) => p ? { ...p, imagen: d.imagen } : p)
-    } else {
-      setMsg(d.error ?? "Error al subir imagen")
+    try {
+      const r = await fetch("/api/enlace/perfil", { method: "PUT", body: fd })
+      const d = await r.json()
+      if (d.success) {
+        setMsg("Foto actualizada.")
+        setPerfil((p) => p ? { ...p, imagen: d.imagen } : p)
+      } else {
+        setMsg(d.error ?? "Error al subir imagen")
+      }
+    } catch {
+      setMsg("Error al subir imagen")
     }
     setSubiendo(false)
   }
 
-  const imgSrc = perfil?.imagen && perfil.imagen !== "sin imagen.jpg"
+  const imgSrc = perfil?.imagen && !perfil.imagen.toLowerCase().includes("sin imagen")
     ? `/ImagenPerfil/${perfil.imagen}`
     : null
 
@@ -56,9 +63,15 @@ export default function EnlaceDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[6px] mb-6">
         {/* Foto y datos */}
         <div className="bg-[#fff] border border-[#e8e4df] p-6 flex flex-col items-center text-center">
-          <div className="w-32 h-32 rounded-full bg-[#faf5e4] flex items-center justify-center mb-4 overflow-hidden border-2 border-[#c9a227]">
+          <div className="relative w-32 h-32 rounded-full bg-[#faf5e4] flex items-center justify-center mb-4 overflow-hidden border-2 border-[#c9a227]">
             {imgSrc ? (
-              <img src={imgSrc} alt="Foto de perfil" className="w-full h-full object-cover" />
+              <Image
+                src={imgSrc}
+                alt="Foto de perfil"
+                fill
+                sizes="128px"
+                className="object-cover"
+              />
             ) : (
               <User className="w-12 h-12 text-[#c9a227]" />
             )}
@@ -95,7 +108,7 @@ export default function EnlaceDashboard() {
             {[
               { label: "Representantes", href: "/dashboard/enlace/representantes", icon: UserCheck },
               { label: "Datos de Miembros", href: "/dashboard/enlace/miembros", icon: Users },
-              { label: "Visor de Produccion", href: "/dashboard/enlace/produccion", icon: Eye },
+              { label: "Visor de Producción", href: "/dashboard/enlace/produccion", icon: Eye },
             ].map((action) => (
               <Link
                 key={action.label}

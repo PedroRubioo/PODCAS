@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 function SinImagen({ size }: { size: number }) {
@@ -36,16 +37,20 @@ export default function ImagenPublicacion({
   alt: string;
   size?: number;
 }) {
-  if (!src) return <SinImagen size={size} />;
+  const [errored, setErrored] = useState(false);
+
+  useEffect(() => {
+    setErrored(false);
+  }, [src]);
+
+  if (!src || errored) return <SinImagen size={size} />;
   return (
     <Image
       src={src}
       alt={alt}
       fill
       className="object-cover transition-transform duration-500 group-hover:scale-105"
-      onError={(e) => {
-        e.currentTarget.style.display = "none";
-      }}
+      onError={() => setErrored(true)}
     />
   );
 }

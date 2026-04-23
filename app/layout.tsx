@@ -17,8 +17,8 @@ const _dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'UTHH - Sistema Web para Cuerpos Academicos',
-  description: 'Sistema de Informacion para el Control de los Cuerpos Academicos de la Universidad Tecnologica de la Huasteca Hidalguense',
+  title: 'UTHH - Sistema Web para Cuerpos Académicos',
+  description: 'Sistema de Información para el Control de los Cuerpos Académicos de la Universidad Tecnológica de la Huasteca Hidalguense',
 }
 
 export default function RootLayout({
@@ -28,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${_playfair.variable} ${_dmSans.variable} font-sans antialiased`}>
+      <body
+        className={`${_playfair.variable} ${_dmSans.variable} font-sans antialiased`}
+        suppressHydrationWarning
+      >
         <AuthSessionProvider>
           {children}
         </AuthSessionProvider>

@@ -1,11 +1,15 @@
-"use client";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
-import { SessionProvider } from "next-auth/react";
-
-export default function DashboardRootLayout({
+export default async function DashboardRootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <SessionProvider>{children}</SessionProvider>;
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+  // Root layout (app/layout.tsx) ya provee el <AuthSessionProvider>.
+  return <>{children}</>;
 }

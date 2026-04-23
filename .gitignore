@@ -9,3 +9,31 @@ node_modules/
 .env*.local
 .DS_Store
 .env
+
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# IDE / herramientas locales
+.claude/
+.cursor/
+.cursorrules
+docs/superpowers/
+
+# Logs
+*.log
+npm-debug.log*
+
+# DB backups (no commitear nunca, son enormes)
+*.bak
+
+# Carpetas de media del proyecto legacy (LogoTiposCA, Publicaciones, etc.)
+# Las imágenes/videos pesados NO deben vivir en git, se copian en cada equipo.
+public/Publicaciones/
+public/LogoTiposCA/
+public/ImagenPerfil/
+public/uploads/
+
+# Archivos de media pesados sueltos
+*.mp4
+*.mov
+*.avi

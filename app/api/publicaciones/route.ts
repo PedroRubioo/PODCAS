@@ -1,26 +1,29 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
+import sql from "mssql";
+import { apiError, boundedLimit } from "@/lib/api-helpers";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = searchParams.get("limit");
+    const limit = boundedLimit(searchParams.get("limit"), 100, 500);
     const pool = await getConnection();
 
-    const query = limit
-      ? `SELECT TOP ${parseInt(limit)} intClvPublicacion, vchNombrePublicacion, 
-         dtmFechaPublicacion, vchDescripcion, vchRutaImagenPublicacion 
-         FROM tbl_CA_Publicaciones ORDER BY dtmFechaPublicacion DESC`
-      : `SELECT intClvPublicacion, vchNombrePublicacion, 
-         dtmFechaPublicacion, vchDescripcion, vchRutaImagenPublicacion 
-         FROM tbl_CA_Publicaciones ORDER BY dtmFechaPublicacion DESC`;
-
-    const result = await pool.request().query(query);
+    const result = await pool
+      .request()
+      .input("limit", sql.Int, limit)
+      .query(`
+        SELECT TOP (@limit)
+          intClvPublicacion,
+          vchNombrePublicacion,
+          dtmFechaPublicacion,
+          vchDescripcion,
+          vchRutaImagenPublicacion
+        FROM tbl_CA_Publicaciones
+        ORDER BY dtmFechaPublicacion DESC
+      `);
     return NextResponse.json({ success: true, data: result.recordset });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: String(error) },
-      { status: 500 },
-    );
+    return apiError(error, "GET /api/publicaciones");
   }
 }

@@ -56,6 +56,7 @@ function formatFecha(fecha: string) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "America/Mexico_City",
   });
 }
 
@@ -69,7 +70,7 @@ export default async function ArticuloPage({
   if (!pub) notFound();
 
   const masPublicaciones = await getMasPublicaciones(id);
-  const autor = `${pub.vchNombre} ${pub.vchAPaterno} ${pub.vchAMaterno}`.trim();
+  const autor = [pub.vchNombre, pub.vchAPaterno, pub.vchAMaterno].filter(Boolean).join(" ");
 
   const imagenes = [
     pub.vchRutaImagenPublicacion,

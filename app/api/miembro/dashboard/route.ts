@@ -1,43 +1,60 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import sql from "mssql";
+import { apiError, requireRole } from "@/lib/api-helpers";
 
 export async function GET() {
+  const session = await requireRole(["3"]);
+  if (!session.ok) return session.response;
+
   try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false }, { status: 401 });
-
-    const usuario = session.user.id as string;
-    const claveCA = (session.user as any).claveCA as string;
-
+    const usuario = session.user.id;
+    const claveCA = session.user.claveCA;
     const pool = await getConnection();
 
-    const [trabajador, dpto, imagen, cuerpo, statsProduccion, statsMiembros] = await Promise.all([
-      pool.request()
-        .input("u", sql.VarChar, usuario)
-        .query("SELECT vchNombre, vchAPaterno, vchAMaterno, descripcion_puesto FROM tblTrabajadores WHERE vchClvTrabajador = @u"),
-      pool.request()
-        .input("u", sql.VarChar, usuario)
-        .query(`SELECT DISTINCT Dep.vchNomDpto FROM tblDepartamentos AS Dep
-          INNER JOIN tblCarreras Carr ON Dep.chrClvDpto = Carr.chrClvDpto
-          INNER JOIN tblTrabajadores ON tblTrabajadores.chrClvDptoTrab = Dep.chrClvDpto
-          WHERE Dep.chrClvDpto <> '00' AND Carr.bitActiva = 1 AND tblTrabajadores.vchClvTrabajador = @u`),
-      pool.request()
-        .input("u", sql.VarChar, usuario)
-        .query("SELECT ISNULL(ImagenPerfil,'sin imagen.jpg') AS ImagenPerfil FROM tbl_CA_CATrabajador WHERE vchClvTrabajador = @u"),
-      pool.request()
-        .input("c", sql.VarChar, claveCA)
-        .query("SELECT vchNombreCA FROM tbl_CA_CuerposAcademicos WHERE vchClvCA = @c"),
-      pool.request()
-        .input("u", sql.VarChar, usuario)
-        .query("SELECT COUNT(*) AS total FROM tbl_CA_Produccion WHERE vchClvTrabajador = @u"),
-      pool.request()
-        .input("c", sql.VarChar, claveCA)
-        .query("SELECT COUNT(*) AS total FROM tbl_CA_CATrabajador WHERE vchClvCA = @c"),
-    ]);
+    const [trabajador, dpto, imagen, cuerpo, statsProduccion, statsMiembros] =
+      await Promise.all([
+        pool
+          .request()
+          .input("u", sql.VarChar, usuario)
+          .query(
+            "SELECT vchNombre, vchAPaterno, vchAMaterno, descripcion_puesto FROM tblTrabajadores WHERE vchClvTrabajador = @u",
+          ),
+        pool
+          .request()
+          .input("u", sql.VarChar, usuario)
+          .query(`SELECT DISTINCT Dep.vchNomDpto FROM tblDepartamentos AS Dep
+            INNER JOIN tblCarreras Carr ON Dep.chrClvDpto = Carr.chrClvDpto
+            INNER JOIN tblTrabajadores ON tblTrabajadores.chrClvDptoTrab = Dep.chrClvDpto
+            WHERE Dep.chrClvDpto <> '00' AND Carr.bitActiva = 1 AND tblTrabajadores.vchClvTrabajador = @u`),
+        pool
+          .request()
+          .input("u", sql.VarChar, usuario)
+          .query(
+            "SELECT ISNULL(ImagenPerfil,'sin imagen.jpg') AS ImagenPerfil FROM tbl_CA_CATrabajador WHERE vchClvTrabajador = @u",
+          ),
+        pool
+          .request()
+          .input("c", sql.VarChar, claveCA)
+          .query(
+            "SELECT vchNombreCA FROM tbl_CA_CuerposAcademicos WHERE vchClvCA = @c",
+          ),
+        pool
+          .request()
+          .input("u", sql.VarChar, usuario)
+          .query(
+            "SELECT COUNT(*) AS total FROM tbl_CA_Produccion WHERE vchClvTrabajador = @u",
+          ),
+        pool
+          .request()
+          .input("c", sql.VarChar, claveCA)
+          .query(
+            "SELECT COUNT(*) AS total FROM tbl_CA_CATrabajador WHERE vchClvCA = @c",
+          ),
+      ]);
 
-    const recientes = await pool.request()
+    const recientes = await pool
+      .request()
       .input("u", sql.VarChar, usuario)
       .query(`SELECT TOP 3 pr.intClvProduccion, pr.vchTituloProducto, p.vchNombreProducto,
         pr.dtmFechaRegistro, s.vchNombreStatus
@@ -51,7 +68,11 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: {
-        nombre: row ? `${row.vchNombre} ${row.vchAPaterno} ${row.vchAMaterno}`.trim() : "",
+        nombre: row
+          ? [row.vchNombre, row.vchAPaterno, row.vchAMaterno]
+              .filter(Boolean)
+              .join(" ")
+          : "",
         descripcionPuesto: row?.descripcion_puesto ?? "",
         departamento: dpto.recordset[0]?.vchNomDpto ?? "",
         imagenPerfil: imagen.recordset[0]?.ImagenPerfil ?? "sin imagen.jpg",
@@ -63,6 +84,6 @@ export async function GET() {
       },
     });
   } catch (error) {
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    return apiError(error, "GET /api/miembro/dashboard");
   }
 }

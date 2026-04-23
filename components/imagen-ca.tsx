@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 function SinImagen() {
@@ -32,16 +33,20 @@ export default function ImagenCA({
   src: string | null;
   alt: string;
 }) {
-  if (!src) return <SinImagen />;
+  const [errored, setErrored] = useState(false);
+
+  useEffect(() => {
+    setErrored(false);
+  }, [src]);
+
+  if (!src || errored) return <SinImagen />;
   return (
     <Image
       src={src}
       alt={alt}
       fill
       className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
-      onError={(e) => {
-        e.currentTarget.style.display = "none";
-      }}
+      onError={() => setErrored(true)}
     />
   );
 }

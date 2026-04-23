@@ -27,6 +27,7 @@ function formatFecha(fecha: string) {
     year: "numeric",
     month: "short",
     day: "numeric",
+    timeZone: "America/Mexico_City",
   });
 }
 

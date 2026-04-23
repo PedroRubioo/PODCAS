@@ -14,31 +14,11 @@ import {
   ChevronLeft,
   ChevronDown,
 } from "lucide-react";
+import { redirectForRole } from "@/lib/roles";
 
 interface TipoUsuario {
   intClvTipoUsuario: string;
   vchTipoUsuario: string;
-}
-
-function getRedirectPath(tipoUser: string): string {
-  switch (tipoUser) {
-    case "1":
-      return "/dashboard/representante";
-    case "2":
-      return "/dashboard/enlace";
-    case "3":
-      return "/dashboard/miembro";
-    case "5":
-      return "/dashboard/admin";
-    case "6":
-      return "/dashboard/lider";
-    case "7":
-      return "/dashboard/externo";
-    case "8":
-      return "/dashboard/director";
-    default:
-      return "/dashboard";
-  }
 }
 
 export default function LoginPage() {
@@ -62,7 +42,18 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!role || !usuario || !contrasena) return;
+    if (!role) {
+      setError("Selecciona un tipo de usuario.");
+      return;
+    }
+    if (!usuario.trim()) {
+      setError("Ingresa tu usuario.");
+      return;
+    }
+    if (!contrasena) {
+      setError("Ingresa tu contraseña.");
+      return;
+    }
     setIsLoading(true);
     setError("");
 
@@ -82,8 +73,13 @@ export default function LoginPage() {
 
       // Obtener sesión real para redirigir según el tipo del SP, no del dropdown
       const session = await getSession();
-      const tipoReal = (session?.user as any)?.tipoUser ?? role;
-      router.push(getRedirectPath(tipoReal));
+      const tipoReal = (session?.user as { tipoUser?: string } | undefined)?.tipoUser;
+      if (!tipoReal) {
+        setError("No se pudo establecer la sesión. Intenta de nuevo.");
+        setIsLoading(false);
+        return;
+      }
+      router.push(redirectForRole(tipoReal));
     } catch {
       setError("Ocurrió un error al iniciar sesión.");
       setIsLoading(false);

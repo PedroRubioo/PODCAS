@@ -14,7 +14,7 @@ Sistema web para la gestión y consulta de Cuerpos Académicos de la Universidad
 | React | 19.2.4 |
 | TypeScript | 5.7.3 |
 | Tailwind CSS | 4.2.0 |
-| mssql | ^11.x |
+| mssql | ^12.x |
 | NextAuth.js | 5.0.0-beta |
 | nodemailer | ^7.x |
 | SQL Server | 2019 |
@@ -38,8 +38,8 @@ Antes de ejecutar el proyecto asegúrate de tener instalado lo siguiente:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/LAHH19MX/PODCA.git
-cd PODCA
+git clone https://github.com/PedroRubioo/PODCAS.git
+cd PODCAS
 ```
 
 ### 2. Instalar dependencias
@@ -58,12 +58,14 @@ DB_DATABASE=bduthh_2018
 DB_USER=sa
 DB_PASSWORD=TuPasswordDeSQL
 DB_PORT=1433
-AUTH_SECRET=TuClaveSecretaParaSesiones
+AUTH_SECRET=<generalo-con-openssl-rand-base64-32>
 EMAIL_USER=tu-correo@gmail.com
 EMAIL_PASS=tu-contraseña-de-aplicacion
+NEXTAUTH_URL=http://localhost:3000
 ```
 
-> **Nota:** `AUTH_SECRET` puede ser cualquier string largo. Puedes generarlo con `openssl rand -base64 32`.
+> **Nota:** `AUTH_SECRET` debe ser un string aleatorio largo. **Nunca** dejes el valor de ejemplo. Genera uno con `openssl rand -base64 32`.
+> `NEXTAUTH_URL` se usa para validar el header `Origin` en endpoints mutativos (CSRF).
 
 ### 4. Copiar carpetas de imágenes
 
@@ -91,27 +93,29 @@ Abre el navegador en [http://localhost:3000](http://localhost:3000)
 ```
 PODCA/
 ├── app/
-│   ├── page.tsx                        ← Página principal (Home)
-│   ├── login/page.tsx                  ← Módulo de login
-│   ├── publicaciones/
-│   │   ├── page.tsx                    ← Lista de publicaciones
-│   │   └── [id]/page.tsx               ← Detalle de publicación
-│   ├── cuerpos-academicos/page.tsx     ← Lista de cuerpos académicos
-│   └── api/
-│       ├── auth/[...nextauth]/         ← NextAuth
-│       ├── publicaciones/              ← API de publicaciones
-│       ├── cuerpos-academicos/         ← API de cuerpos académicos
-│       ├── integrantes/                ← API de integrantes por CA
-│       ├── tipos-usuario/              ← API de tipos de usuario
-│       └── contacto/                   ← API de envío de mensajes
-├── components/
-│   ├── publicaciones-carousel.tsx
-│   ├── cuerpos-academicos-client.tsx
-│   ├── imagen-ca.tsx
-│   └── imagen-publicacion.tsx
-├── lib/
-│   └── db.ts                           ← Conexión a SQL Server
-└── .env.local                          ← Variables de entorno (no subir a GitHub)
+│   ├── layout.tsx, error.tsx, loading.tsx, not-found.tsx
+│   ├── (public)/                       ← Rutas públicas (route group)
+│   │   ├── layout.tsx
+│   │   ├── page.tsx                    ← Home
+│   │   ├── login/page.tsx
+│   │   ├── publicaciones/
+│   │   │   ├── page.tsx, [id]/page.tsx
+│   │   └── cuerpos-academicos/page.tsx
+│   ├── dashboard/                      ← Área autenticada
+│   │   ├── layout.tsx (server, valida sesión)
+│   │   ├── loading.tsx, page.tsx       ← Router por rol
+│   │   └── {admin,direccion,director,enlace,externo,lider,miembro,representante}/
+│   └── api/                            ← REST endpoints
+│       ├── auth/[...nextauth]/, contacto/, cuerpos-academicos/, integrantes/
+│       ├── lineas/, publicaciones/, tipos-usuario/, test/
+│       ├── admin/usuarios/{...}
+│       ├── enlace/{miembros,perfil,produccion,representantes}
+│       └── miembro/{dashboard,perfil,produccion}
+├── components/                         ← UI compartida (incluye components/ui/ shadcn)
+├── hooks/, lib/                        ← Helpers (db, api-helpers, safe-upload, rate-limit, roles)
+├── auth.ts                             ← Configuración NextAuth v5
+├── proxy.ts                            ← Middleware Next 16 (gate /dashboard)
+└── .env.local                          ← Variables de entorno (NO subir a git)
 ```
 
 ---

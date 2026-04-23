@@ -244,11 +244,21 @@ const roleConfig: Record<
   },
 };
 
-export function DashboardSidebar({ role }: { role: string }) {
+type RoleKey = keyof typeof roleConfig;
+
+export function DashboardSidebar({ role }: { role: RoleKey | string }) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
-  const config = roleConfig[role] || roleConfig.admin;
+  const config = roleConfig[role as RoleKey] ?? null;
+
+  if (!config) {
+    return (
+      <aside className="w-[260px] h-screen bg-[#722F37] border-r border-[rgba(255,255,255,0.1)] flex flex-col shrink-0 sticky top-0 items-center justify-center text-[rgba(255,255,255,0.65)] px-6 text-center text-[0.85rem]">
+        Rol no reconocido. Vuelve a iniciar sesión.
+      </aside>
+    );
+  }
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });

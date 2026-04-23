@@ -1,22 +1,21 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import sql from "mssql";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { apiError, checkOrigin, requireRole } from "@/lib/api-helpers";
+import { saveUpload } from "@/lib/safe-upload";
 
 export async function GET() {
+  const session = await requireRole(["3"]);
+  if (!session.ok) return session.response;
+
   try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false }, { status: 401 });
-
-    const usuario = ((session.user as any).id ?? session.user.id) as string;
-    const claveCA = (session.user as any).claveCA as string;
-
+    const usuario = session.user.id;
+    const claveCA = session.user.claveCA;
     const pool = await getConnection();
 
     const [perfil, perfiles, lgac, lineas] = await Promise.all([
-      pool.request()
+      pool
+        .request()
         .input("p1", sql.VarChar, usuario)
         .query(`
           SELECT
@@ -46,11 +45,16 @@ export async function GET() {
           LEFT JOIN tbl_CA_LineaInvestigacion li ON t.intLineaInvestigacion = li.intClaveLinea
           WHERE t.vchClvTrabajador = @p1
         `),
-      pool.request().query("SELECT intClvPerfilPROMEP, vchNombrePerfil FROM tbl_CA_PerfilesPROMEP"),
+      pool
+        .request()
+        .query("SELECT intClvPerfilPROMEP, vchNombrePerfil FROM tbl_CA_PerfilesPROMEP"),
       pool.request().query("SELECT intClvLGAC, vchNombreLGAC FROM tbl_CA_CALGAC"),
-      pool.request()
+      pool
+        .request()
         .input("claveCA", sql.VarChar, claveCA)
-        .query("SELECT intClaveLinea, vchDescripcion FROM tbl_CA_LineaInvestigacion WHERE vchClvCA = @claveCA"),
+        .query(
+          "SELECT intClaveLinea, vchDescripcion FROM tbl_CA_LineaInvestigacion WHERE vchClvCA = @claveCA",
+        ),
     ]);
 
     return NextResponse.json({
@@ -63,44 +67,56 @@ export async function GET() {
       },
     });
   } catch (error) {
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    return apiError(error, "GET /api/miembro/perfil");
   }
 }
 
 export async function POST(request: Request) {
-  try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false }, { status: 401 });
+  const session = await requireRole(["3"]);
+  if (!session.ok) return session.response;
+  if (!checkOrigin(request)) {
+    return NextResponse.json(
+      { success: false, error: "Origen no permitido" },
+      { status: 403 },
+    );
+  }
 
-    const usuario = session.user.id as string;
-    const claveCA = (session.user as any).claveCA as string;
+  try {
+    const usuario = session.user.id;
+    const claveCA = session.user.claveCA;
 
     const formData = await request.formData();
-    const telefono = formData.get("telefono") as string;
-    const emailPersonal = formData.get("emailPersonal") as string;
-    const linea = formData.get("linea") as string;
-    const perfil = formData.get("perfil") as string;
-    const lgac = formData.get("lgac") as string;
-    const fechaInicio = formData.get("fechaInicio") as string;
-    const fechaVenc = formData.get("fechaVenc") as string;
-    const imagen = formData.get("imagen") as File | null;
+    const telefono = String(formData.get("telefono") ?? "").slice(0, 20);
+    const emailPersonal = String(formData.get("emailPersonal") ?? "").slice(0, 100);
+    const linea = String(formData.get("linea") ?? "").slice(0, 16);
+    const perfil = String(formData.get("perfil") ?? "").slice(0, 16);
+    const lgac = String(formData.get("lgac") ?? "").slice(0, 16);
+    const fechaInicio = String(formData.get("fechaInicio") ?? "").slice(0, 10);
+    const fechaVenc = String(formData.get("fechaVenc") ?? "").slice(0, 10);
+    const imagen = formData.get("imagen");
 
     let nombreImagen: string | null = null;
-    if (imagen && imagen.size > 0) {
-      const validExts = ["jpg", "jpeg", "png", "bmp"];
-      const ext = imagen.name.split(".").pop()?.toLowerCase() ?? "";
-      if (!validExts.includes(ext)) {
-        return NextResponse.json({ success: false, error: "Extensión de imagen no válida" }, { status: 400 });
+    if (imagen instanceof File && imagen.size > 0) {
+      const upload = await saveUpload({
+        file: imagen,
+        subDir: "uploads/perfil",
+        allowedExt: ["jpg", "jpeg", "png", "bmp"],
+        maxBytes: 5 * 1024 * 1024,
+        prefix: usuario,
+      });
+      if (!upload.ok) {
+        return NextResponse.json(
+          { success: false, error: upload.error },
+          { status: upload.status },
+        );
       }
-      const uploadsDir = path.join(process.cwd(), "public", "uploads", "perfil");
-      await mkdir(uploadsDir, { recursive: true });
-      nombreImagen = imagen.name;
-      await writeFile(path.join(uploadsDir, nombreImagen), Buffer.from(await imagen.arrayBuffer()));
+      nombreImagen = upload.filename;
     }
 
     const pool = await getConnection();
 
-    const req = pool.request()
+    const req = pool
+      .request()
       .input("fechaInicio", sql.VarChar, fechaInicio)
       .input("fechaVenc", sql.VarChar, fechaVenc)
       .input("telefono", sql.VarChar, telefono)
@@ -122,13 +138,16 @@ export async function POST(request: Request) {
       ${nombreImagen ? ", ImagenPerfil = @imagen" : ""}
       WHERE vchClvTrabajador = @usuario`);
 
-    await pool.request()
+    await pool
+      .request()
       .input("lgac", sql.VarChar, lgac)
       .input("claveCA", sql.VarChar, claveCA)
-      .query("UPDATE tbl_CA_CuerposAcademicos SET intClvLGAC = @lgac WHERE vchClvCA = @claveCA");
+      .query(
+        "UPDATE tbl_CA_CuerposAcademicos SET intClvLGAC = @lgac WHERE vchClvCA = @claveCA",
+      );
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    return apiError(error, "POST /api/miembro/perfil");
   }
 }

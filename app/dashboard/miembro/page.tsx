@@ -22,10 +22,12 @@ export default function MiembroDashboard() {
   const [data, setData] = useState<DashboardData | null>(null)
 
   useEffect(() => {
-    fetch("/api/miembro/dashboard")
+    const ctrl = new AbortController()
+    fetch("/api/miembro/dashboard", { signal: ctrl.signal })
       .then((r) => r.json())
       .then((json) => { if (json.success) setData(json.data) })
-      .catch(() => {})
+      .catch((e) => { if (e.name !== "AbortError") console.error("[miembro/dashboard]", e) })
+    return () => ctrl.abort()
   }, [])
 
   const formatFecha = (iso: string) =>

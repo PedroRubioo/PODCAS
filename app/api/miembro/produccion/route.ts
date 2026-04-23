@@ -1,23 +1,24 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import sql from "mssql";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { apiError, checkOrigin, requireRole } from "@/lib/api-helpers";
+import { saveUpload } from "@/lib/safe-upload";
+
+const FILE_EXTS = ["doc", "docx", "xlsx", "pdf", "pptx", "bmp", "jpg", "jpeg", "png", "mp4"];
 
 export async function GET() {
+  const session = await requireRole(["3"]);
+  if (!session.ok) return session.response;
+
   try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false }, { status: 401 });
-
-    const usuario = session.user.id as string;
-    const claveCA = (session.user as any).claveCA as string;
-    const chrCarrera = (session.user as any).chrCarrera as string;
-
+    const usuario = session.user.id;
+    const claveCA = session.user.claveCA;
+    const chrCarrera = session.user.chrCarrera;
     const pool = await getConnection();
 
     const [produccion, productos, status, lineas, cuerpos] = await Promise.all([
-      pool.request()
+      pool
+        .request()
         .input("u", sql.VarChar, usuario)
         .query(`SELECT pr.intClvProduccion, pr.dtmFechaRegistro, pr.intClvProducto,
           p.vchNombreProducto, pr.vchTituloProducto, pr.vchDescripcionBreve, pr.vchImpacto,
@@ -39,10 +40,13 @@ export async function GET() {
           ORDER BY pr.dtmFechaRegistro DESC`),
       pool.request().query("SELECT intClvProducto, vchNombreProducto FROM tbl_CA_Productos"),
       pool.request().query("SELECT intClvStatus, vchNombreStatus FROM tbl_CA_Status"),
-      pool.request()
+      pool
+        .request()
         .input("carrera", sql.VarChar, chrCarrera)
         .input("claveCA", sql.VarChar, claveCA)
-        .query("SELECT intClaveLinea, vchDescripcion FROM tbl_CA_LineaInvestigacion WHERE chrCarrera = @carrera AND vchClvCA = @claveCA"),
+        .query(
+          "SELECT intClaveLinea, vchDescripcion FROM tbl_CA_LineaInvestigacion WHERE chrCarrera = @carrera AND vchClvCA = @claveCA",
+        ),
       pool.request().query("SELECT vchClvCA, vchNombreCA FROM tbl_CA_CuerposAcademicos"),
     ]);
 
@@ -57,98 +61,159 @@ export async function GET() {
       },
     });
   } catch (error) {
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    return apiError(error, "GET /api/miembro/produccion");
   }
 }
 
 export async function POST(request: Request) {
-  try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false }, { status: 401 });
+  const session = await requireRole(["3"]);
+  if (!session.ok) return session.response;
+  if (!checkOrigin(request)) {
+    return NextResponse.json(
+      { success: false, error: "Origen no permitido" },
+      { status: 403 },
+    );
+  }
 
-    const usuario = session.user.id as string;
-    const claveCA = (session.user as any).claveCA as string;
-    const chrCarrera = (session.user as any).chrCarrera as string;
+  try {
+    const usuario = session.user.id;
+    const claveCA = session.user.claveCA;
+    const chrCarrera = session.user.chrCarrera;
 
     const formData = await request.formData();
-    const archivo = formData.get("archivo") as File | null;
-
-    if (!archivo || archivo.size === 0) {
-      return NextResponse.json({ success: false, error: "El archivo es obligatorio" }, { status: 400 });
+    const archivo = formData.get("archivo");
+    if (!(archivo instanceof File)) {
+      return NextResponse.json(
+        { success: false, error: "El archivo es obligatorio" },
+        { status: 400 },
+      );
     }
 
-    const validExts = ["doc", "docx", "xlsx", "pdf", "pptx", "bmp", "jpg", "jpeg", "png", "mp4"];
-    const ext = archivo.name.split(".").pop()?.toLowerCase() ?? "";
-    if (!validExts.includes(ext)) {
-      return NextResponse.json({ success: false, error: "Extensión de archivo no válida" }, { status: 400 });
+    const upload = await saveUpload({
+      file: archivo,
+      subDir: "uploads/produccion",
+      allowedExt: FILE_EXTS,
+      maxBytes: 25 * 1024 * 1024,
+      prefix: usuario,
+    });
+    if (!upload.ok) {
+      return NextResponse.json(
+        { success: false, error: upload.error },
+        { status: upload.status },
+      );
     }
-
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "produccion");
-    await mkdir(uploadsDir, { recursive: true });
-    await writeFile(path.join(uploadsDir, archivo.name), Buffer.from(await archivo.arrayBuffer()));
 
     const pool = await getConnection();
-    await pool.request()
-      .input("intClvProducto", sql.VarChar, formData.get("tipoProducto") as string)
-      .input("vchTituloProducto", sql.VarChar, formData.get("titulo") as string)
-      .input("vchDescripcionBreve", sql.VarChar, formData.get("descripcion") as string)
-      .input("vchImpacto", sql.VarChar, formData.get("impacto") as string)
-      .input("intClaveLineInvestigacion", sql.VarChar, formData.get("linea") as string)
-      .input("intStatus", sql.VarChar, formData.get("status") as string)
-      .input("bitPerteneCA", sql.VarChar, formData.get("perteneceCA") as string)
-      .input("vchAutores", sql.VarChar, formData.get("autores") as string)
-      .input("vchColaboradores", sql.VarChar, formData.get("colaboradores") as string)
+    await pool
+      .request()
+      .input("intClvProducto", sql.VarChar, String(formData.get("tipoProducto") ?? ""))
+      .input("vchTituloProducto", sql.VarChar, String(formData.get("titulo") ?? ""))
+      .input("vchDescripcionBreve", sql.VarChar, String(formData.get("descripcion") ?? ""))
+      .input("vchImpacto", sql.VarChar, String(formData.get("impacto") ?? ""))
+      .input("intClaveLineInvestigacion", sql.VarChar, String(formData.get("linea") ?? ""))
+      .input("intStatus", sql.VarChar, String(formData.get("status") ?? ""))
+      .input("bitPerteneCA", sql.VarChar, String(formData.get("perteneceCA") ?? ""))
+      .input("vchAutores", sql.VarChar, String(formData.get("autores") ?? ""))
+      .input("vchColaboradores", sql.VarChar, String(formData.get("colaboradores") ?? ""))
       .input("vchClvTrabajador", sql.VarChar, usuario)
-      .input("vchCAColaborador1_Int", sql.VarChar, formData.get("ca1") as string || "")
-      .input("vchCAColaborador2_Int", sql.VarChar, formData.get("ca2") as string || "")
-      .input("vchCAColaborador3_Int", sql.VarChar, formData.get("ca3") as string || "")
-      .input("vchCAColaborador1_Ext", sql.VarChar, formData.get("caExterna") as string || "")
-      .input("vchNombreColaboradorExterno", sql.VarChar, formData.get("colaboradorExt") as string || "")
-      .input("RutaArchivo", sql.VarChar, archivo.name)
+      .input("vchCAColaborador1_Int", sql.VarChar, String(formData.get("ca1") ?? ""))
+      .input("vchCAColaborador2_Int", sql.VarChar, String(formData.get("ca2") ?? ""))
+      .input("vchCAColaborador3_Int", sql.VarChar, String(formData.get("ca3") ?? ""))
+      .input("vchCAColaborador1_Ext", sql.VarChar, String(formData.get("caExterna") ?? ""))
+      .input("vchNombreColaboradorExterno", sql.VarChar, String(formData.get("colaboradorExt") ?? ""))
+      .input("RutaArchivo", sql.VarChar, upload.filename)
       .input("chrCarrera", sql.VarChar, chrCarrera)
       .input("vchClvCA", sql.VarChar, claveCA)
       .execute("sp_CA_SubirProduccion");
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    return apiError(error, "POST /api/miembro/produccion");
   }
 }
 
 export async function PUT(request: Request) {
+  const session = await requireRole(["3"]);
+  if (!session.ok) return session.response;
+  if (!checkOrigin(request)) {
+    return NextResponse.json(
+      { success: false, error: "Origen no permitido" },
+      { status: 403 },
+    );
+  }
+
   try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ success: false }, { status: 401 });
+    const usuario = session.user.id;
 
     const formData = await request.formData();
-    const id = formData.get("id") as string;
-    const nuevoArchivo = formData.get("archivo") as File | null;
-
-    let archivoNombre: string | null = null;
-    if (nuevoArchivo && nuevoArchivo.size > 0) {
-      const uploadsDir = path.join(process.cwd(), "public", "uploads", "produccion");
-      await mkdir(uploadsDir, { recursive: true });
-      archivoNombre = nuevoArchivo.name;
-      await writeFile(path.join(uploadsDir, archivoNombre), Buffer.from(await nuevoArchivo.arrayBuffer()));
+    const id = String(formData.get("id") ?? "");
+    const idNum = Number.parseInt(id);
+    if (!Number.isFinite(idNum) || idNum <= 0) {
+      return NextResponse.json(
+        { success: false, error: "ID inválido" },
+        { status: 400 },
+      );
     }
 
     const pool = await getConnection();
-    const req = pool.request()
-      .input("tipoProducto", sql.VarChar, formData.get("tipoProducto") as string)
-      .input("titulo", sql.VarChar, formData.get("titulo") as string)
-      .input("descripcion", sql.VarChar, formData.get("descripcion") as string)
-      .input("impacto", sql.VarChar, formData.get("impacto") as string)
-      .input("linea", sql.VarChar, formData.get("linea") as string)
-      .input("status", sql.VarChar, formData.get("status") as string)
-      .input("perteneceCA", sql.VarChar, formData.get("perteneceCA") as string)
-      .input("autores", sql.VarChar, formData.get("autores") as string)
-      .input("colaboradores", sql.VarChar, formData.get("colaboradores") as string)
-      .input("ca1", sql.VarChar, formData.get("ca1") as string || "")
-      .input("ca2", sql.VarChar, formData.get("ca2") as string || "")
-      .input("ca3", sql.VarChar, formData.get("ca3") as string || "")
-      .input("caExterna", sql.VarChar, formData.get("caExterna") as string || "")
-      .input("colaboradorExt", sql.VarChar, formData.get("colaboradorExt") as string || "")
-      .input("id", sql.Int, parseInt(id));
+
+    // Verificar ownership antes de actualizar (fix IDOR)
+    const owner = await pool
+      .request()
+      .input("id", sql.Int, idNum)
+      .query(
+        `SELECT vchClvTrabajador FROM tbl_CA_Produccion WHERE intClvProduccion = @id`,
+      );
+    if (owner.recordset.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "No se encontró la producción" },
+        { status: 404 },
+      );
+    }
+    if (String(owner.recordset[0].vchClvTrabajador) !== String(usuario)) {
+      return NextResponse.json(
+        { success: false, error: "No tienes permisos sobre esta producción" },
+        { status: 403 },
+      );
+    }
+
+    const nuevoArchivo = formData.get("archivo");
+    let archivoNombre: string | null = null;
+    if (nuevoArchivo instanceof File && nuevoArchivo.size > 0) {
+      const upload = await saveUpload({
+        file: nuevoArchivo,
+        subDir: "uploads/produccion",
+        allowedExt: FILE_EXTS,
+        maxBytes: 25 * 1024 * 1024,
+        prefix: usuario,
+      });
+      if (!upload.ok) {
+        return NextResponse.json(
+          { success: false, error: upload.error },
+          { status: upload.status },
+        );
+      }
+      archivoNombre = upload.filename;
+    }
+
+    const req = pool
+      .request()
+      .input("tipoProducto", sql.VarChar, String(formData.get("tipoProducto") ?? ""))
+      .input("titulo", sql.VarChar, String(formData.get("titulo") ?? ""))
+      .input("descripcion", sql.VarChar, String(formData.get("descripcion") ?? ""))
+      .input("impacto", sql.VarChar, String(formData.get("impacto") ?? ""))
+      .input("linea", sql.VarChar, String(formData.get("linea") ?? ""))
+      .input("status", sql.VarChar, String(formData.get("status") ?? ""))
+      .input("perteneceCA", sql.VarChar, String(formData.get("perteneceCA") ?? ""))
+      .input("autores", sql.VarChar, String(formData.get("autores") ?? ""))
+      .input("colaboradores", sql.VarChar, String(formData.get("colaboradores") ?? ""))
+      .input("ca1", sql.VarChar, String(formData.get("ca1") ?? ""))
+      .input("ca2", sql.VarChar, String(formData.get("ca2") ?? ""))
+      .input("ca3", sql.VarChar, String(formData.get("ca3") ?? ""))
+      .input("caExterna", sql.VarChar, String(formData.get("caExterna") ?? ""))
+      .input("colaboradorExt", sql.VarChar, String(formData.get("colaboradorExt") ?? ""))
+      .input("id", sql.Int, idNum)
+      .input("u", sql.VarChar, usuario);
 
     if (archivoNombre) req.input("archivo", sql.VarChar, archivoNombre);
 
@@ -169,10 +234,10 @@ export async function PUT(request: Request) {
       vchCAColaborador1_Ext = @caExterna,
       vchNombreColaboradorExterno = @colaboradorExt
       ${archivoNombre ? ", RutaArchivo = @archivo" : ""}
-      WHERE intClvProduccion = @id`);
+      WHERE intClvProduccion = @id AND vchClvTrabajador = @u`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+    return apiError(error, "PUT /api/miembro/produccion");
   }
 }

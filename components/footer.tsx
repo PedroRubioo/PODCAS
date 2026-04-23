@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="bg-[#722F37] text-[rgba(255,255,255,0.7)] pt-[4.5rem] pb-8 border-t border-[rgba(201,162,39,0.25)]">
       <div className="max-w-[1240px] mx-auto px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-[rgba(255,255,255,0.12)]" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-12 pb-12 border-b border-[rgba(255,255,255,0.12)]">
           {/* Brand */}
           <div>
             <p className="font-serif text-[1.4rem] text-[#fff] font-bold mb-5">UTHH</p>

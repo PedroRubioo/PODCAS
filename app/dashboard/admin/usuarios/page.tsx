@@ -71,11 +71,19 @@ export default function AdminUsuariosPage() {
       .then((d) => {
         if (d.success) setUsuarios(d.data)
       })
+      .catch((e) => console.error("[admin/usuarios] fetch error", e))
       .finally(() => setLoading(false))
   }
 
   useEffect(() => {
-    fetchUsuarios()
+    const ctrl = new AbortController()
+    setLoading(true)
+    fetch("/api/admin/usuarios", { signal: ctrl.signal })
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setUsuarios(d.data) })
+      .catch((e) => { if (e.name !== "AbortError") console.error("[admin/usuarios] fetch error", e) })
+      .finally(() => setLoading(false))
+    return () => ctrl.abort()
   }, [])
 
   const openModal = () => {

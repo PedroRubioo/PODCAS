@@ -1,29 +1,30 @@
 import { getConnection } from "@/lib/db";
 import { NextResponse } from "next/server";
+import sql from "mssql";
+import { apiError, boundedLimit } from "@/lib/api-helpers";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = searchParams.get("limit");
+    const limit = boundedLimit(searchParams.get("limit"), 100, 500);
     const pool = await getConnection();
 
-    const query = `
-      SELECT ${limit ? `TOP ${parseInt(limit)}` : "TOP 100"} 
-        tbl_CA_CuerposAcademicos.id,
-        tbl_CA_CuerposAcademicos.vchClvCA,
-        UPPER(tbl_CA_CuerposAcademicos.vchNombreCA) AS vchNombreCA,
-        tbl_CA_CuerposAcademicos.ImagenLogo,
-        tblDepartamentos.vchNomDpto
-      FROM tbl_CA_CuerposAcademicos 
-      INNER JOIN tblDepartamentos 
-        ON tbl_CA_CuerposAcademicos.chrCarrera = tblDepartamentos.chrClvDpto
-    `;
-    const result = await pool.request().query(query);
+    const result = await pool
+      .request()
+      .input("limit", sql.Int, limit)
+      .query(`
+        SELECT TOP (@limit)
+          tbl_CA_CuerposAcademicos.id,
+          tbl_CA_CuerposAcademicos.vchClvCA,
+          UPPER(tbl_CA_CuerposAcademicos.vchNombreCA) AS vchNombreCA,
+          tbl_CA_CuerposAcademicos.ImagenLogo,
+          tblDepartamentos.vchNomDpto
+        FROM tbl_CA_CuerposAcademicos
+        INNER JOIN tblDepartamentos
+          ON tbl_CA_CuerposAcademicos.chrCarrera = tblDepartamentos.chrClvDpto
+      `);
     return NextResponse.json({ success: true, data: result.recordset });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: String(error) },
-      { status: 500 },
-    );
+    return apiError(error, "GET /api/cuerpos-academicos");
   }
 }

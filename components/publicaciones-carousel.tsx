@@ -44,7 +44,7 @@ export default function PublicacionesCarousel({ publicaciones = [] }: { publicac
               </div>
               <div className="p-[1.2rem_1.25rem_1.3rem] flex flex-col flex-1">
                 <span className="text-[0.66rem] tracking-[0.14em] uppercase text-[#c9a227] font-semibold mb-2">
-                  {new Date(pub.dtmFechaPublicacion).toLocaleDateString('es-MX', { year: 'numeric', month: 'short' })}
+                  {new Date(pub.dtmFechaPublicacion).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', timeZone: 'America/Mexico_City' })}
                 </span>
                 <h3 className="font-serif text-[0.95rem] font-semibold text-[#722F37] leading-[1.35] mb-[0.65rem] line-clamp-2">
                   {pub.vchNombrePublicacion}

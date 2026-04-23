@@ -4,6 +4,11 @@ import { getConnection } from "@/lib/db";
 import sql from "mssql";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 8, // 8 horas
+    updateAge: 60 * 30, // refrescar cada 30 min de actividad
+  },
   providers: [
     Credentials({
       credentials: {
@@ -12,33 +17,46 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        const tipo = typeof credentials?.tipo === "string" ? credentials.tipo : "";
+        const usuario = typeof credentials?.usuario === "string" ? credentials.usuario : "";
+        const password = typeof credentials?.password === "string" ? credentials.password : "";
+
+        if (!tipo || !usuario || !password) return null;
+
         try {
           const pool = await getConnection();
           const result = await pool
             .request()
-            .input("clave", sql.VarChar, credentials.tipo)
-            .input("trabajador", sql.VarChar, credentials.usuario)
-            .input("password", sql.VarChar, credentials.password)
+            .input("clave", sql.VarChar, tipo)
+            .input("trabajador", sql.VarChar, usuario)
+            .input("password", sql.VarChar, password)
             .execute("sp_CA_BuscarUsuario");
 
-          if (result.recordset.length === 0) return null;
+          if (!result.recordset || result.recordset.length === 0) return null;
+          if (result.recordset.length > 1) {
+            console.warn(
+              "[auth] sp_CA_BuscarUsuario devolvió múltiples filas para",
+              usuario,
+            );
+          }
 
           const row = result.recordset[result.recordset.length - 1];
 
-          // Si el tipo seleccionado no coincide con el tipo real → acceso denegado
-          if (String(row.intClvTipoUsuario) !== String(credentials.tipo)) {
-            return null;
-          }
+          if (row.intClvTipoUsuario == null) return null;
+          if (String(row.intClvTipoUsuario) !== tipo) return null;
 
           return {
-            id: String(credentials.usuario),
-            name: String(row.Expr1),
+            id: usuario,
+            name: row.Expr1 != null ? String(row.Expr1) : usuario,
             tipoUser: String(row.intClvTipoUsuario),
-            chrCarrera: String(row.chrCarrera),
-            claveCA: String(row.vchClvCA),
+            chrCarrera: row.chrCarrera != null ? String(row.chrCarrera) : "",
+            claveCA: row.vchClvCA != null ? String(row.vchClvCA) : "",
           };
         } catch (error) {
-          console.error("=== Error en authorize ===", error);
+          console.error(
+            "[auth] error en authorize:",
+            error instanceof Error ? error.message : String(error),
+          );
           return null;
         }
       },
@@ -48,17 +66,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
-        token.tipoUser = (user as any).tipoUser;
-        token.chrCarrera = (user as any).chrCarrera;
-        token.claveCA = (user as any).claveCA;
+        token.tipoUser = (user as { tipoUser?: string }).tipoUser;
+        token.chrCarrera = (user as { chrCarrera?: string }).chrCarrera;
+        token.claveCA = (user as { claveCA?: string }).claveCA;
       }
       return token;
     },
     async session({ session, token }) {
-      (session.user as any).id = token.sub;
-      (session.user as any).tipoUser = token.tipoUser;
-      (session.user as any).chrCarrera = token.chrCarrera;
-      (session.user as any).claveCA = token.claveCA;
+      const u = session.user as Record<string, unknown>;
+      u.id = token.sub;
+      u.tipoUser = token.tipoUser;
+      u.chrCarrera = token.chrCarrera;
+      u.claveCA = token.claveCA;
       return session;
     },
   },

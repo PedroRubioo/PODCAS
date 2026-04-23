@@ -25,7 +25,7 @@ interface CA {
 interface Integrante {
   clave: string;
   nombre: string;
-  correo: string;
+  tieneCorreo: number;
 }
 
 function SinImagen() {
@@ -51,6 +51,33 @@ function SinImagen() {
   );
 }
 
+function LogoCA({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className: string;
+}) {
+  const [errored, setErrored] = useState(false);
+
+  useEffect(() => {
+    setErrored(false);
+  }, [src]);
+
+  if (errored) return <SinImagen />;
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className={className}
+      onError={() => setErrored(true)}
+    />
+  );
+}
+
 const VISIBLE_MEMBERS = 3;
 
 export default function CuerposAcademicosClient({
@@ -68,7 +95,7 @@ export default function CuerposAcademicosClient({
   const [statusMsg, setStatusMsg] = useState("");
   const [loadingIntegrantes, setLoadingIntegrantes] = useState(false);
 
-  const openContact = async (ca: CA) => {
+  const openContact = async (ca: CA, signal?: AbortSignal) => {
     setContactCA(ca);
     setSelectedMember(0);
     setMensaje("");
@@ -76,11 +103,16 @@ export default function CuerposAcademicosClient({
     setStatusMsg("");
     setLoadingIntegrantes(true);
     try {
-      const res = await fetch(`/api/integrantes?clvCA=${ca.vchClvCA}`);
+      const res = await fetch(
+        `/api/integrantes?clvCA=${encodeURIComponent(ca.vchClvCA)}`,
+        { signal },
+      );
       const json = await res.json();
       setIntegrantes(json.data ?? []);
-    } catch {
-      setIntegrantes([]);
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") {
+        setIntegrantes([]);
+      }
     } finally {
       setLoadingIntegrantes(false);
     }
@@ -90,22 +122,33 @@ export default function CuerposAcademicosClient({
     const clvCA = searchParams.get("CA");
     if (clvCA && cuerposAcademicos.length > 0) {
       const ca = cuerposAcademicos.find((c) => c.vchClvCA === clvCA);
-      if (ca) openContact(ca);
+      if (ca) {
+        const ctrl = new AbortController();
+        openContact(ca, ctrl.signal);
+        return () => ctrl.abort();
+      }
     }
   }, [searchParams, cuerposAcademicos]);
 
   const enviarMensaje = async () => {
     if (!mensaje.trim()) return;
+    if (!contactCA) return;
     setEnviando(true);
     setStatusMsg("");
     try {
       const integrante = integrantes[selectedMember];
+      if (!integrante) {
+        setStatusMsg("❌ Selecciona un integrante");
+        setEnviando(false);
+        return;
+      }
       const res = await fetch("/api/contacto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          correo: integrante?.correo,
-          nombre: integrante?.nombre,
+          claveIntegrante: integrante.clave,
+          clvCA: contactCA.vchClvCA,
+          nombre: integrante.nombre,
           mensaje,
         }),
       });
@@ -164,14 +207,10 @@ export default function CuerposAcademicosClient({
 
                 <div className="relative w-[120px] h-[120px] mx-auto mb-8 rounded-full overflow-hidden border-[3px] border-[#faf5e4] bg-[#f0ece6]">
                   {contactCA.ImagenLogo ? (
-                    <Image
+                    <LogoCA
                       src={`/LogoTiposCA/${contactCA.ImagenLogo}`}
                       alt={contactCA.vchNombreCA}
-                      fill
                       className="object-contain p-2"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
                     />
                   ) : (
                     <SinImagen />
@@ -219,7 +258,7 @@ export default function CuerposAcademicosClient({
                             )
                             .map((miembro, i) => (
                               <button
-                                key={i}
+                                key={miembro.clave || i}
                                 onClick={() => setSelectedMember(i)}
                                 className={`flex items-center gap-3 p-3 rounded-[4px] border text-left cursor-pointer transition-all duration-300 ${
                                   selectedMember === i
@@ -246,7 +285,7 @@ export default function CuerposAcademicosClient({
                                   </span>
                                   {selectedMember === i && (
                                     <span className="text-[0.7rem] text-[#c9a227] mt-[2px] block truncate">
-                                      {miembro.correo || "SIN REGISTRO"}
+                                      {miembro.tieneCorreo ? "Correo registrado" : "Sin correo"}
                                     </span>
                                   )}
                                 </div>
@@ -283,11 +322,12 @@ export default function CuerposAcademicosClient({
                       <Mail className="w-[16px] h-[16px] text-[#c9a227] mt-[2px] shrink-0" />
                       <div>
                         <p className="text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-[#c9a227] mb-1">
-                          Correo electronico
+                          Contacto
                         </p>
                         <p className="text-[0.88rem] text-[#2e2e2e]">
-                          {integrantes[selectedMember]?.correo ||
-                            "SIN REGISTRO"}
+                          {integrantes[selectedMember]?.tieneCorreo
+                            ? "Correo registrado"
+                            : "SIN REGISTRO"}
                         </p>
                         <p className="text-[0.72rem] text-[#9a9a9a] mt-[2px]">
                           Contactando a: {integrantes[selectedMember]?.nombre}
@@ -356,14 +396,10 @@ export default function CuerposAcademicosClient({
                 >
                   <div className="relative overflow-hidden aspect-[16/10] bg-[#f0ece6]">
                     {ca.ImagenLogo ? (
-                      <Image
+                      <LogoCA
                         src={`/LogoTiposCA/${ca.ImagenLogo}`}
                         alt={ca.vchNombreCA}
-                        fill
                         className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
                       />
                     ) : (
                       <SinImagen />
