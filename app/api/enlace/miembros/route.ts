@@ -17,7 +17,7 @@ export async function GET() {
         ca.vchNombreCA AS nombreCA,
         p.vchNombrePerfil AS perfil,
         CASE ct.intClvTipoUsuario
-          WHEN '3' THEN 'Miembro'
+          WHEN '3' THEN 'Docente Investigador'
           WHEN '6' THEN 'Representante'
           ELSE 'Otro'
         END AS tipoRol

@@ -4,7 +4,7 @@
  * Confirmado contra `tbl_CA_TipoUsuarios` el 2026-04-23:
  *   1 = REPRESENTANTE INSTITUCIONAL
  *   2 = DIRECCION ACADEMICA   (en el front se llama "enlace académico")
- *   3 = MIEMBRO DE CUERPO ACADEMICO
+ *   3 = DOCENTE INVESTIGADOR (antes: MIEMBRO DE CUERPO ACADEMICO)
  *   5 = ADMINISTRADOR
  *   6 = LIDER DEL CUERPO ACADEMICO
  *   7 = EXTERNO

@@ -38,7 +38,7 @@ interface CA {
 
 const TIPOS = [
   { value: "2", label: "Representante" },
-  { value: "3", label: "Miembro" },
+  { value: "3", label: "Docente Investigador" },
 ]
 
 export default function AdminUsuariosPage() {
@@ -219,7 +219,7 @@ export default function AdminUsuariosPage() {
                 </td>
                 <td className="px-6 py-4">
                   <span className="text-[0.68rem] font-semibold px-2 py-0.5 rounded-[3px] bg-[#faf5e4] text-[#c9a227]">
-                    {{ 2: "Representante", 3: "Miembro" }[user.intClvTipoUsuario] ?? `Tipo ${user.intClvTipoUsuario}`}
+                    {{ 1: "Representante Institucional", 2: "Direccion Academica", 3: "Docente Investigador", 5: "Administrador", 6: "Lider de C.A.", 7: "Externo", 8: "Director de Programa" }[user.intClvTipoUsuario] ?? `Tipo ${user.intClvTipoUsuario}`}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-[0.78rem] text-[#6b6b6b]">{user.vchClvCA || "—"}</td>

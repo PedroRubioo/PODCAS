@@ -37,7 +37,7 @@ export default function MiembroDashboard() {
     <DashboardLayout role="miembro">
       <div className="mb-8">
         <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">
-          {data ? `Miembro de ${data.nombreCA}` : "Miembro del Cuerpo Académico"}
+          {data ? `Docente Investigador de ${data.nombreCA}` : "Docente Investigador"}
         </span>
         <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">
           {data ? `Bienvenido, ${data.nombre}` : "Cargando..."}

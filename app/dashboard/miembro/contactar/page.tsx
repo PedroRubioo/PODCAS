@@ -44,7 +44,7 @@ export default function MiembroContactarPage() {
   return (
     <DashboardLayout role="miembro">
       <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Miembro C.A.</span>
+        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Docente Investigador</span>
         <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Contactar Cuerpos Academicos</h1>
         <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Envia un mensaje a miembros de otros cuerpos academicos.</p>
       </div>

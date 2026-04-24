@@ -216,7 +216,7 @@ const roleConfig: Record<
     ],
   },
   miembro: {
-    label: "Miembro de C.A.",
+    label: "Docente Investigador",
     description: "Participacion en cuerpo academico",
     items: [
       { label: "Dashboard", href: "/dashboard/miembro", icon: LayoutDashboard },

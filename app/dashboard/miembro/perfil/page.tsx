@@ -82,7 +82,7 @@ export default function MiembroPerfilPage() {
   return (
     <DashboardLayout role="miembro">
       <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Miembro C.A.</span>
+        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Docente Investigador</span>
         <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Mi Perfil</h1>
         <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Actualiza tu información personal y académica.</p>
       </div>
