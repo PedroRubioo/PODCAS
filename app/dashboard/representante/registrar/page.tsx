@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { UserCheck, Plus, Building2, Mail, Users } from "lucide-react"
 
 const representantes = [
@@ -15,13 +17,17 @@ const representantes = [
 ]
 
 export default function RepresentanteRegistrarPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="representante">
       <PageHeader eyebrow="Representante institucional" title="Registrar Representantes" subtitle="Gestiona los lideres y representantes de cada cuerpo academico." />
 
       <div className="flex items-center justify-between mb-6">
         <p className="text-[0.82rem] text-[#6b6b6b]">{representantes.length} representantes registrados</p>
-        <button className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#c9a227]">
+        <button
+          onClick={() => setAviso(true)}
+          className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#c9a227]"
+        >
           <Plus className="w-3.5 h-3.5" />
           Registrar representante
         </button>
@@ -52,6 +58,13 @@ export default function RepresentanteRegistrarPage() {
           </div>
         ))}
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Registro de"
+        accent="representantes"
+      />
     </DashboardLayout>
   )
 }

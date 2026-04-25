@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { Users, Plus, Mail, BookOpen, GraduationCap, Award } from "lucide-react"
 
 const integrantes = [
@@ -30,13 +32,17 @@ const integrantes = [
 ]
 
 export default function LiderIntegrantesPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="lider">
       <PageHeader eyebrow="UTHH-CA-7" title="Integrantes" subtitle="Gestiona los miembros de tu cuerpo academico." />
 
       <div className="flex items-center justify-between mb-6">
         <p className="text-[0.82rem] text-[#6b6b6b]">{integrantes.length} miembros activos</p>
-        <button className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]">
+        <button
+          onClick={() => setAviso(true)}
+          className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]"
+        >
           <Plus className="w-3.5 h-3.5" />
           Invitar integrante
         </button>
@@ -90,6 +96,13 @@ export default function LiderIntegrantesPage() {
           </div>
         ))}
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Invitación de"
+        accent="integrantes"
+      />
     </DashboardLayout>
   )
 }

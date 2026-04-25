@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { BookOpen, Plus, Search, Eye, Edit, Trash2 } from "lucide-react"
 
 const publicaciones = [
@@ -19,6 +21,7 @@ const estadoColor: Record<string, string> = {
 }
 
 export default function LiderPublicacionesPage() {
+  const [aviso, setAviso] = useState<null | { title: string; accent?: string }>(null)
   return (
     <DashboardLayout role="lider">
       <PageHeader eyebrow="UTHH-CA-7" title="Publicaciones" subtitle="Gestiona las publicaciones de tu cuerpo academico." />
@@ -28,9 +31,12 @@ export default function LiderPublicacionesPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[#9a9a9a]" />
           <input type="text" placeholder="Buscar publicaciones..." className="w-full pl-9 pr-4 py-[0.5rem] bg-[#f7f4ee] border border-[#e4ddd0] rounded-[3px] text-[0.82rem] text-[#2e2e2e] placeholder:text-[#9a9a9a] outline-none focus:border-[#b78c33] transition-colors duration-200" />
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]">
+        <button
+          onClick={() => setAviso({ title: "Nueva", accent: "publicación" })}
+          className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]"
+        >
           <Plus className="w-3.5 h-3.5" />
-          Nueva publicacion
+          Nueva publicación
         </button>
       </div>
 
@@ -68,9 +74,9 @@ export default function LiderPublicacionesPage() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-1">
-                    <button className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors"><Eye className="w-3.5 h-3.5 text-[#6b6b6b]" /></button>
-                    <button className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors"><Edit className="w-3.5 h-3.5 text-[#6b6b6b]" /></button>
-                    <button className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#f0ece4] transition-colors"><Trash2 className="w-3.5 h-3.5 text-[#9a9a9a]" /></button>
+                    <button onClick={() => setAviso({ title: "Visor de", accent: "publicación" })} aria-label="Ver" className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors"><Eye className="w-3.5 h-3.5 text-[#6b6b6b]" /></button>
+                    <button onClick={() => setAviso({ title: "Edición de", accent: "publicaciones" })} aria-label="Editar" className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors"><Edit className="w-3.5 h-3.5 text-[#6b6b6b]" /></button>
+                    <button onClick={() => setAviso({ title: "Eliminación de", accent: "publicaciones" })} aria-label="Eliminar" className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#f0ece4] transition-colors"><Trash2 className="w-3.5 h-3.5 text-[#9a9a9a]" /></button>
                   </div>
                 </td>
               </tr>
@@ -78,6 +84,13 @@ export default function LiderPublicacionesPage() {
           </tbody>
         </table>
       </div>
+
+      <ConstructionDialog
+        open={aviso !== null}
+        onClose={() => setAviso(null)}
+        title={aviso?.title ?? ""}
+        accent={aviso?.accent}
+      />
     </DashboardLayout>
   )
 }

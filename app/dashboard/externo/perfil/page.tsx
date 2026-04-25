@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { UserCog, Mail, Building2, Save } from "lucide-react"
 
 export default function ExternoPerfilPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="externo">
       <PageHeader eyebrow="Acceso externo" title="Mi Perfil" subtitle="Actualiza tu informacion personal." />
@@ -53,13 +56,23 @@ export default function ExternoPerfilPage() {
             ))}
           </div>
           <div className="flex justify-end mt-6">
-            <button className="inline-flex items-center gap-2 px-5 py-[0.55rem] bg-[#0f0f0f] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]">
+            <button
+              onClick={() => setAviso(true)}
+              className="inline-flex items-center gap-2 px-5 py-[0.55rem] bg-[#0f0f0f] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]"
+            >
               <Save className="w-3.5 h-3.5" />
               Guardar cambios
             </button>
           </div>
         </div>
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Edición del"
+        accent="perfil"
+      />
     </DashboardLayout>
   )
 }

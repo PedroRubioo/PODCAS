@@ -2,6 +2,7 @@
 
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { Users, Mail, Building2, Send } from "lucide-react"
 import { useState } from "react"
 
@@ -38,6 +39,7 @@ const cuerposAcademicos = [
 export default function MiembroContactarPage() {
   const [selectedCA, setSelectedCA] = useState(0)
   const [selectedMiembro, setSelectedMiembro] = useState(0)
+  const [aviso, setAviso] = useState(false)
 
   const ca = cuerposAcademicos[selectedCA]
   const miembro = ca.miembros[selectedMiembro]
@@ -120,13 +122,23 @@ export default function MiembroContactarPage() {
           </div>
 
           <div className="flex justify-end">
-            <button className="inline-flex items-center gap-2 px-5 py-[0.55rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]">
+            <button
+              onClick={() => setAviso(true)}
+              className="inline-flex items-center gap-2 px-5 py-[0.55rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]"
+            >
               <Send className="w-3.5 h-3.5" />
               Enviar mensaje
             </button>
           </div>
         </div>
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Mensajería interna"
+        description="Esta sección todavía no permite enviar mensajes a otros cuerpos académicos. Para contactar a un integrante puedes usar la sección pública de 'Cuerpos Académicos' desde la página principal."
+      />
     </DashboardLayout>
   )
 }

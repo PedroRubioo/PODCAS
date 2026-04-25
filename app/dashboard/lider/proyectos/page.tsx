@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
-import { FolderOpen, Plus, Users, Calendar, ArrowRight } from "lucide-react"
+import { ConstructionDialog } from "@/components/construction-dialog"
+import { FolderOpen, Plus, Users, Calendar } from "lucide-react"
 
 const proyectos = [
   {
@@ -35,13 +37,18 @@ const proyectos = [
 ]
 
 export default function LiderProyectosPage() {
+  const [showAviso, setShowAviso] = useState(false)
+
   return (
     <DashboardLayout role="lider">
       <PageHeader eyebrow="UTHH-CA-7" title="Proyectos" subtitle="Gestiona los proyectos de investigacion del cuerpo academico." />
 
       <div className="flex items-center justify-between mb-6">
         <p className="text-[0.82rem] text-[#6b6b6b]">{proyectos.length} proyectos registrados</p>
-        <button className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]">
+        <button
+          onClick={() => setShowAviso(true)}
+          className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#691B31] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]"
+        >
           <Plus className="w-3.5 h-3.5" />
           Nuevo proyecto
         </button>
@@ -88,6 +95,13 @@ export default function LiderProyectosPage() {
           </div>
         ))}
       </div>
+
+      <ConstructionDialog
+        open={showAviso}
+        onClose={() => setShowAviso(false)}
+        title="Registro de"
+        accent="proyectos"
+      />
     </DashboardLayout>
   )
 }

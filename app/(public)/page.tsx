@@ -112,12 +112,12 @@ export default async function HomePage() {
             </span>
           </div>
 
-          <h1 className="font-serif text-[clamp(2.3rem,5vw,4.2rem)] font-bold text-white leading-[1.08] mb-5 tracking-[-0.01em]">
+          <h1 className="font-serif text-[clamp(1.8rem,3.6vw,3rem)] font-bold text-white leading-[1.1] mb-4 tracking-[-0.005em]">
             Formando líderes del{" "}
             <em className="italic text-[#ddb94a] font-normal">conocimiento</em>
             <br />y la innovación
           </h1>
-          <p className="text-[1.02rem] text-[rgba(255,255,255,0.82)] max-w-[520px] leading-[1.75] font-light mb-8">
+          <p className="text-[0.92rem] text-[rgba(255,255,255,0.82)] max-w-[500px] leading-[1.7] font-light mb-7">
             Investigación, ciencia y tecnología al servicio del desarrollo de la
             región Huasteca.
           </p>

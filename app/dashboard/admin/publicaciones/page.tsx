@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { BookOpen, Search, Filter, Eye, CheckCircle, XCircle } from "lucide-react"
 
 const publicaciones = [
@@ -20,6 +22,7 @@ const estadoConfig: Record<string, { color: string; icon: React.ElementType }> =
 }
 
 export default function AdminPublicacionesPage() {
+  const [aviso, setAviso] = useState<null | { title: string; accent?: string }>(null)
   return (
     <DashboardLayout role="admin">
       <PageHeader eyebrow="Administracion" title="Publicaciones" subtitle="Revisa y aprueba las publicaciones de los cuerpos academicos." />
@@ -83,15 +86,15 @@ export default function AdminPublicacionesPage() {
                     <div className="flex items-center gap-1">
                       {pub.estado === "Pendiente" && (
                         <>
-                          <button className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors" title="Aprobar">
+                          <button onClick={() => setAviso({ title: "Aprobación de", accent: "publicaciones" })} aria-label="Aprobar" className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors" title="Aprobar">
                             <CheckCircle className="w-4 h-4 text-[#c9a227]" />
                           </button>
-                          <button className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#f8f6f3] transition-colors" title="Rechazar">
+                          <button onClick={() => setAviso({ title: "Rechazo de", accent: "publicaciones" })} aria-label="Rechazar" className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#f8f6f3] transition-colors" title="Rechazar">
                             <XCircle className="w-4 h-4 text-[#9a9a9a]" />
                           </button>
                         </>
                       )}
-                      <button className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors" title="Ver">
+                      <button onClick={() => setAviso({ title: "Visor de", accent: "publicación" })} aria-label="Ver" className="w-7 h-7 flex items-center justify-center rounded-[3px] hover:bg-[#faf5e4] transition-colors" title="Ver">
                         <Eye className="w-4 h-4 text-[#6b6b6b]" />
                       </button>
                     </div>
@@ -102,6 +105,13 @@ export default function AdminPublicacionesPage() {
           </tbody>
         </table>
       </div>
+
+      <ConstructionDialog
+        open={aviso !== null}
+        onClose={() => setAviso(null)}
+        title={aviso?.title ?? ""}
+        accent={aviso?.accent}
+      />
     </DashboardLayout>
   )
 }

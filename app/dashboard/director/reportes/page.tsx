@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { BarChart3, FileText, Download, Building2, BookOpen, Users, TrendingUp } from "lucide-react"
 
 const reportes = [
@@ -20,6 +22,7 @@ const indicadores = [
 ]
 
 export default function DirectorReportesPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="director">
       <PageHeader eyebrow="Director del programa" title="Reportes" subtitle="Generacion y consulta de reportes de produccion academica." />
@@ -53,7 +56,10 @@ export default function DirectorReportesPage() {
             <BarChart3 className="w-[14px] h-[14px] text-[#b78c33]" />
             <h3 className="text-[0.72rem] font-semibold tracking-[0.12em] uppercase text-[#b78c33]">Reportes generados</h3>
           </div>
-          <button className="inline-flex items-center gap-2 px-4 py-[0.4rem] bg-[#0f0f0f] text-[#fff] rounded-[3px] text-[0.72rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]">
+          <button
+            onClick={() => setAviso(true)}
+            className="inline-flex items-center gap-2 px-4 py-[0.4rem] bg-[#0f0f0f] text-[#fff] rounded-[3px] text-[0.72rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]"
+          >
             <FileText className="w-3 h-3" />
             Generar reporte
           </button>
@@ -79,7 +85,10 @@ export default function DirectorReportesPage() {
                 <td className="px-6 py-4 text-[0.78rem] text-[#6b6b6b]">{rep.tipo}</td>
                 <td className="px-6 py-4 text-[0.78rem] text-[#9a9a9a]">{rep.fecha}</td>
                 <td className="px-6 py-4">
-                  <button className="inline-flex items-center gap-1.5 text-[0.72rem] font-semibold text-[#b78c33] hover:text-[#0f0f0f] transition-colors">
+                  <button
+                    onClick={() => setAviso(true)}
+                    className="inline-flex items-center gap-1.5 text-[0.72rem] font-semibold text-[#b78c33] hover:text-[#0f0f0f] transition-colors"
+                  >
                     <Download className="w-3.5 h-3.5" />
                     Descargar
                   </button>
@@ -89,6 +98,13 @@ export default function DirectorReportesPage() {
           </tbody>
         </table>
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Generación de"
+        accent="reportes"
+      />
     </DashboardLayout>
   )
 }

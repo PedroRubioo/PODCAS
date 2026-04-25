@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { StatCard } from "@/components/stat-card"
 import { BarChart3, Download, Users, BookOpen, Building2, TrendingUp } from "lucide-react"
 
@@ -22,6 +24,7 @@ const reportesDisponibles = [
 ]
 
 export default function AdminReportesPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="admin">
       <PageHeader eyebrow="Administracion" title="Reportes y Estadisticas" subtitle="Genera y consulta reportes del sistema." />
@@ -79,7 +82,10 @@ export default function AdminReportesPage() {
                 <h4 className="text-[0.85rem] font-semibold text-[#2e2e2e] mb-1">{reporte.titulo}</h4>
                 <p className="text-[0.78rem] text-[#6b6b6b]">{reporte.descripcion}</p>
               </div>
-              <button className="shrink-0 flex items-center gap-2 px-3 py-[0.4rem] bg-[#722F37] text-[#fff] rounded-[3px] text-[0.72rem] font-semibold transition-colors duration-300 hover:bg-[#c9a227]">
+              <button
+                onClick={() => setAviso(true)}
+                className="shrink-0 flex items-center gap-2 px-3 py-[0.4rem] bg-[#722F37] text-[#fff] rounded-[3px] text-[0.72rem] font-semibold transition-colors duration-300 hover:bg-[#c9a227]"
+              >
                 <Download className="w-3 h-3" />
                 {reporte.formato}
               </button>
@@ -87,6 +93,13 @@ export default function AdminReportesPage() {
           ))}
         </div>
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Generación de"
+        accent="reportes"
+      />
     </DashboardLayout>
   )
 }

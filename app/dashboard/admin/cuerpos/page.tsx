@@ -1,9 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { Building2, Search, Plus, Users, BookOpen, FolderOpen } from "lucide-react"
-import Link from "next/link"
 
 const cuerpos = [
   { clave: "UTHH-CA-1", nombre: "Administracion y Evaluacion de Proyectos", grado: "En Formacion", lider: "Mtro. Juan Perez", integrantes: 3, publicaciones: 12, lgac: "Gestion de Proyectos Tecnologicos" },
@@ -21,6 +22,7 @@ const gradoColor: Record<string, string> = {
 }
 
 export default function AdminCuerposPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="admin">
       <PageHeader eyebrow="Administracion" title="Cuerpos Academicos" subtitle="Gestiona todos los cuerpos academicos registrados." />
@@ -31,10 +33,13 @@ export default function AdminCuerposPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[#9a9a9a]" />
           <input type="text" placeholder="Buscar cuerpos academicos..." className="w-full pl-9 pr-4 py-[0.5rem] bg-[#fdfcfa] border border-[#e8e4df] rounded-[3px] text-[0.82rem] text-[#2e2e2e] placeholder:text-[#9a9a9a] outline-none focus:border-[#c9a227] transition-colors duration-200" />
         </div>
-        <Link href="#" className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#722F37] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold no-underline transition-colors duration-300 hover:bg-[#c9a227]">
+        <button
+          onClick={() => setAviso(true)}
+          className="inline-flex items-center gap-2 px-4 py-[0.5rem] bg-[#722F37] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#c9a227]"
+        >
           <Plus className="w-3.5 h-3.5" />
           Registrar C.A.
-        </Link>
+        </button>
       </div>
 
       {/* Cards Grid */}
@@ -64,6 +69,13 @@ export default function AdminCuerposPage() {
           </div>
         ))}
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Registro de"
+        accent="cuerpos académicos"
+      />
     </DashboardLayout>
   )
 }

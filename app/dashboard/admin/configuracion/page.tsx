@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { Settings, Shield, Bell, Database, Globe, Save } from "lucide-react"
 
 export default function AdminConfiguracionPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="admin">
       <PageHeader eyebrow="Administracion" title="Configuracion del Sistema" subtitle="Ajustes generales y preferencias del sistema." />
@@ -117,7 +120,10 @@ export default function AdminConfiguracionPage() {
                 <div className="w-[25%] h-full bg-[#c9a227] rounded-full" />
               </div>
             </div>
-            <button className="inline-flex items-center justify-center gap-2 px-4 py-[0.5rem] bg-[#722F37] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#c9a227]">
+            <button
+              onClick={() => setAviso(true)}
+              className="inline-flex items-center justify-center gap-2 px-4 py-[0.5rem] bg-[#722F37] text-[#fff] rounded-[3px] text-[0.78rem] font-semibold transition-colors duration-300 hover:bg-[#c9a227]"
+            >
               <Database className="w-3.5 h-3.5" />
               Generar respaldo manual
             </button>
@@ -127,11 +133,21 @@ export default function AdminConfiguracionPage() {
 
       {/* Save */}
       <div className="mt-6 flex justify-end">
-        <button className="inline-flex items-center gap-2 px-6 py-[0.6rem] bg-[#c9a227] text-[#fff] rounded-[3px] text-[0.82rem] font-semibold transition-all duration-300 hover:bg-[#ddb94a] hover:shadow-[0_6px_18px_rgba(183,140,51,0.35)]">
+        <button
+          onClick={() => setAviso(true)}
+          className="inline-flex items-center gap-2 px-6 py-[0.6rem] bg-[#c9a227] text-[#fff] rounded-[3px] text-[0.82rem] font-semibold transition-all duration-300 hover:bg-[#ddb94a] hover:shadow-[0_6px_18px_rgba(183,140,51,0.35)]"
+        >
           <Save className="w-4 h-4" />
           Guardar cambios
         </button>
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Configuración del"
+        accent="sistema"
+      />
     </DashboardLayout>
   )
 }

@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { PageHeader } from "@/components/page-header"
+import { ConstructionDialog } from "@/components/construction-dialog"
 import { StatCard } from "@/components/stat-card"
 import { BarChart3, TrendingUp, Building2, Award, Download } from "lucide-react"
 
@@ -15,6 +17,7 @@ const indicadores = [
 ]
 
 export default function DireccionReportesPage() {
+  const [aviso, setAviso] = useState(false)
   return (
     <DashboardLayout role="direccion">
       <PageHeader eyebrow="Direccion Academica" title="Reportes Institucionales" subtitle="Indicadores de desempeno y metricas de los cuerpos academicos." />
@@ -33,7 +36,10 @@ export default function DireccionReportesPage() {
             <BarChart3 className="w-[14px] h-[14px] text-[#b78c33]" />
             <h3 className="text-[0.72rem] font-semibold tracking-[0.12em] uppercase text-[#b78c33]">Indicadores de desempeno</h3>
           </div>
-          <button className="inline-flex items-center gap-2 px-3 py-[0.4rem] bg-[#0f0f0f] text-[#fff] rounded-[3px] text-[0.72rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]">
+          <button
+            onClick={() => setAviso(true)}
+            className="inline-flex items-center gap-2 px-3 py-[0.4rem] bg-[#0f0f0f] text-[#fff] rounded-[3px] text-[0.72rem] font-semibold transition-colors duration-300 hover:bg-[#b78c33]"
+          >
             <Download className="w-3 h-3" />
             Exportar
           </button>
@@ -74,6 +80,13 @@ export default function DireccionReportesPage() {
           </table>
         </div>
       </div>
+
+      <ConstructionDialog
+        open={aviso}
+        onClose={() => setAviso(false)}
+        title="Exportación de"
+        accent="indicadores"
+      />
     </DashboardLayout>
   )
 }
