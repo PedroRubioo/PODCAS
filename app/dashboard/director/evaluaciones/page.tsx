@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { ClipboardList, Calendar, CheckCircle2, Clock, AlertCircle } from "lucide-react"
 
 const evaluaciones = [
@@ -21,11 +22,7 @@ const estadoConfig: Record<string, { color: string; icon: React.ElementType }> =
 export default function DirectorEvaluacionesPage() {
   return (
     <DashboardLayout role="director">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Director del programa</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Evaluaciones</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Seguimiento de evaluaciones PRODEP, CONACYT e informes de los C.A.</p>
-      </div>
+      <PageHeader eyebrow="Director del programa" title="Evaluaciones" subtitle="Seguimiento de evaluaciones PRODEP, CONACYT e informes de los C.A." />
 
       {/* Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-[6px] mb-8">

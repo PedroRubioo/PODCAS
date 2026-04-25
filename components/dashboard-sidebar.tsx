@@ -270,16 +270,20 @@ export function DashboardSidebar({ role }: { role: RoleKey | string }) {
   const inicial = nombreCompleto.charAt(0).toUpperCase();
 
   return (
-    <aside className="w-[260px] h-screen bg-[#722F37] border-r border-[rgba(255,255,255,0.1)] flex flex-col shrink-0 sticky top-0">
+    <aside className="w-[260px] h-screen bg-gradient-to-b from-[#722F37] to-[#5a252c] border-r border-[rgba(255,255,255,0.1)] flex flex-col shrink-0 sticky top-0">
       {/* Header */}
-      <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.1)]">
-        <Link
-          href="/"
-          className="font-serif text-[1.1rem] font-bold text-[#fff] tracking-[0.04em] no-underline block mb-1"
-        >
-          UTHH
+      <div className="px-5 py-5 border-b border-[rgba(201,162,39,0.2)] relative">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#c9a227] to-transparent" />
+        <Link href="/" className="flex items-center gap-2.5 no-underline mb-[0.55rem]">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#c9a227] to-[#a68520] flex items-center justify-center shadow-[0_2px_6px_rgba(0,0,0,0.25)] shrink-0 border border-[rgba(255,255,255,0.15)]">
+            <span className="font-serif text-[0.6rem] font-bold text-[#722F37] tracking-[0.08em]">UTHH</span>
+          </div>
+          <div className="leading-tight min-w-0">
+            <p className="font-serif text-[0.78rem] font-bold text-[#fff] truncate">Universidad</p>
+            <p className="text-[0.6rem] text-[rgba(201,162,39,0.85)] tracking-[0.08em] uppercase truncate">Tecnológica UTHH</p>
+          </div>
         </Link>
-        <p className="text-[0.65rem] tracking-[0.12em] uppercase text-[#c9a227] font-semibold">
+        <p className="text-[0.62rem] tracking-[0.14em] uppercase text-[#c9a227] font-semibold pt-[0.2rem] border-t border-[rgba(255,255,255,0.08)]">
           {config.label}
         </p>
       </div>

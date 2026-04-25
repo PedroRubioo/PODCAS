@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { StatCard } from "@/components/stat-card"
 import { BarChart3, TrendingUp, Building2, Award, Download } from "lucide-react"
 
@@ -16,11 +17,7 @@ const indicadores = [
 export default function DireccionReportesPage() {
   return (
     <DashboardLayout role="direccion">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Direccion Academica</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Reportes Institucionales</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Indicadores de desempeno y metricas de los cuerpos academicos.</p>
-      </div>
+      <PageHeader eyebrow="Direccion Academica" title="Reportes Institucionales" subtitle="Indicadores de desempeno y metricas de los cuerpos academicos." />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[6px] mb-8">
         <StatCard icon={BarChart3} label="Indicadores cumplidos" value="4/6" sub="66.7% de cumplimiento" />

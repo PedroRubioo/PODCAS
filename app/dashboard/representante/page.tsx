@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { StatCard } from "@/components/stat-card"
 import { Building2, BookOpen, Users, FileText, UserCheck, Eye, GraduationCap, ArrowRight } from "lucide-react"
 import Link from "next/link"
@@ -21,11 +22,7 @@ const actividadReciente = [
 export default function RepresentanteDashboard() {
   return (
     <DashboardLayout role="representante">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Representante institucional</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Enlace Academico</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Gestion de representantes, publicaciones y produccion academica de los C.A.</p>
-      </div>
+      <PageHeader eyebrow="Representante institucional" title="Enlace Academico" subtitle="Gestion de representantes, publicaciones y produccion academica de los C.A." />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[6px] mb-8">
         <StatCard icon={Building2} label="C.A. registrados" value="7" sub="De todos los programas" />

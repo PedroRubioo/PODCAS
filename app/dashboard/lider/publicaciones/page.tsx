@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { BookOpen, Plus, Search, Eye, Edit, Trash2 } from "lucide-react"
 
 const publicaciones = [
@@ -20,11 +21,7 @@ const estadoColor: Record<string, string> = {
 export default function LiderPublicacionesPage() {
   return (
     <DashboardLayout role="lider">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">UTHH-CA-7</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Publicaciones</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Gestiona las publicaciones de tu cuerpo academico.</p>
-      </div>
+      <PageHeader eyebrow="UTHH-CA-7" title="Publicaciones" subtitle="Gestiona las publicaciones de tu cuerpo academico." />
 
       <div className="bg-[#fff] border border-[#e4ddd0] p-4 mb-[6px] flex items-center justify-between flex-wrap gap-4">
         <div className="relative flex-1 min-w-[200px] max-w-[360px]">

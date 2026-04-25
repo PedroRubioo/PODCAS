@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Building2, Users, BookOpen, FlaskConical, ArrowRight, Search } from "lucide-react"
 
 const cuerposAcademicos = [
@@ -16,11 +17,7 @@ const cuerposAcademicos = [
 export default function ExternoExplorarPage() {
   return (
     <DashboardLayout role="externo">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Explorar</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Cuerpos Academicos de la UTHH</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Conoce los cuerpos academicos, sus lineas de investigacion y produccion.</p>
-      </div>
+      <PageHeader eyebrow="Explorar" title="Cuerpos Academicos de la UTHH" subtitle="Conoce los cuerpos academicos, sus lineas de investigacion y produccion." />
 
       <div className="bg-[#fff] border border-[#e4ddd0] p-4 mb-[6px]">
         <div className="relative max-w-[400px]">

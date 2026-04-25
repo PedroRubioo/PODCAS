@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Users, Mail, GraduationCap, Building2, Search } from "lucide-react"
 
 const miembros = [
@@ -15,11 +16,7 @@ const miembros = [
 export default function RepresentanteDatosPage() {
   return (
     <DashboardLayout role="representante">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Representante institucional</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Datos Generales</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Informacion de todos los miembros de los cuerpos academicos.</p>
-      </div>
+      <PageHeader eyebrow="Representante institucional" title="Datos Generales" subtitle="Informacion de todos los miembros de los cuerpos academicos." />
 
       <div className="bg-[#fff] border border-[#e4ddd0] p-4 mb-[6px]">
         <div className="relative max-w-[400px]">

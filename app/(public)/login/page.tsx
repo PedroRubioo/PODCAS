@@ -88,31 +88,85 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-8 bg-[#fdfcfa] relative"
+      className="min-h-screen flex items-center justify-center p-8 bg-[#fdfcfa] relative overflow-hidden"
       style={{
         backgroundImage:
-          "radial-gradient(ellipse at 15% 85%, rgba(183,140,51,0.06) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, rgba(183,140,51,0.05) 0%, transparent 50%)",
+          "radial-gradient(ellipse at 15% 85%, rgba(183,140,51,0.08) 0%, transparent 55%), radial-gradient(ellipse at 85% 15%, rgba(114,47,55,0.06) 0%, transparent 50%)",
       }}
     >
-      <div className="relative bg-[#fff] w-full max-w-[420px] p-[2.8rem_2.8rem_2.4rem] border border-[#e8e4df] shadow-[0_4px_40px_rgba(0,0,0,0.07)]">
-        {/* Gold top bar */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#c9a227] via-[#ddb94a] to-[#c9a227]" />
+      {/* Patrón de puntos sutil esquina superior derecha */}
+      <div
+        aria-hidden
+        className="absolute top-8 right-8 w-[180px] h-[180px] opacity-[0.18] pointer-events-none hidden md:block"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, #722F37 1px, transparent 1.5px)",
+          backgroundSize: "16px 16px",
+        }}
+      />
+      {/* Patrón dorado esquina inferior izquierda */}
+      <div
+        aria-hidden
+        className="absolute bottom-8 left-8 w-[180px] h-[180px] opacity-[0.14] pointer-events-none hidden md:block"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, #c9a227 1px, transparent 1.5px)",
+          backgroundSize: "16px 16px",
+        }}
+      />
+
+      <div className="relative bg-[#fff] w-full max-w-[460px] p-[3.2rem_3rem_2.6rem] border border-[#e8e4df] rounded-[6px] shadow-[0_14px_56px_rgba(114,47,55,0.12),0_4px_18px_rgba(0,0,0,0.06)]">
+        {/* Gold top bar con gradiente */}
+        <div className="absolute top-0 left-0 right-0 h-[4px] rounded-t-[6px] bg-gradient-to-r from-[#c9a227] via-[#ddb94a] to-[#c9a227]" />
+
+        {/* Esquinas ornamentales estilo certificado */}
+        <svg aria-hidden className="absolute top-[14px] left-[14px] w-[22px] h-[22px] text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3">
+          <path d="M3 9V3h6" />
+          <circle cx="3" cy="3" r="1.2" fill="currentColor" />
+        </svg>
+        <svg aria-hidden className="absolute top-[14px] right-[14px] w-[22px] h-[22px] text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3">
+          <path d="M15 3h6v6" />
+          <circle cx="21" cy="3" r="1.2" fill="currentColor" />
+        </svg>
+        <svg aria-hidden className="absolute bottom-[14px] left-[14px] w-[22px] h-[22px] text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3">
+          <path d="M9 21H3v-6" />
+          <circle cx="3" cy="21" r="1.2" fill="currentColor" />
+        </svg>
+        <svg aria-hidden className="absolute bottom-[14px] right-[14px] w-[22px] h-[22px] text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3">
+          <path d="M21 15v6h-6" />
+          <circle cx="21" cy="21" r="1.2" fill="currentColor" />
+        </svg>
 
         {/* Header */}
-        <div className="text-center mb-[2.2rem]">
-          <div className="w-[60px] h-[60px] rounded-full bg-[#722F37] flex items-center justify-center mx-auto mb-[1.4rem] relative">
-            <div className="absolute inset-[-3px] rounded-full border-[1.5px] border-[rgba(183,140,51,0.45)]" />
-            <User className="w-[26px] h-[26px] text-[#c9a227]" />
+        <div className="text-center mb-[1.8rem]">
+          <div className="w-[74px] h-[74px] rounded-full bg-gradient-to-br from-[#722F37] to-[#5a252c] flex items-center justify-center mx-auto mb-[1.3rem] relative shadow-[0_10px_24px_rgba(114,47,55,0.38)]">
+            <div className="absolute inset-[-4px] rounded-full border-[1.5px] border-[rgba(201,162,39,0.55)]" />
+            <div className="absolute inset-[-9px] rounded-full border-[1px] border-[rgba(201,162,39,0.22)]" />
+            <div className="absolute inset-[-14px] rounded-full border-[1px] border-dashed border-[rgba(201,162,39,0.12)]" />
+            <User className="w-[30px] h-[30px] text-[#c9a227]" />
           </div>
-          <span className="text-[0.68rem] font-semibold tracking-[0.2em] uppercase text-[#c9a227] block mb-[0.45rem]">
+          <span className="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[#c9a227] block mb-[0.55rem]">
             Sistema Institucional
           </span>
-          <h1 className="font-serif text-[1.75rem] font-bold text-[#722F37] leading-[1.15] mb-[0.35rem]">
-            Control de Acceso
+          <h1 className="font-serif text-[1.85rem] font-bold text-[#722F37] leading-[1.15] mb-[0.4rem]">
+            Control de <em className="italic text-[#c9a227] font-normal">Acceso</em>
           </h1>
-          <p className="text-[0.81rem] text-[#6b6b6b] font-light leading-[1.6]">
+          <p className="text-[0.82rem] text-[#6b6b6b] font-light leading-[1.6]">
             Selecciona tu rol e ingresa tus credenciales.
           </p>
+        </div>
+
+        {/* UTHH badge */}
+        <div className="flex items-center justify-center gap-3 my-[1.3rem]">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#e8e4df]" />
+          <div className="flex items-center gap-[0.6rem] px-[1.1rem] py-[0.42rem] bg-gradient-to-b from-[#fdf8ec] to-[#faf5e4] border border-[rgba(201,162,39,0.5)] rounded-full shadow-[0_2px_8px_rgba(201,162,39,0.1)]">
+            <div className="w-[6px] h-[6px] rounded-full bg-[#c9a227]" />
+            <span className="font-serif text-[0.82rem] font-bold text-[#722F37] tracking-[0.18em]">
+              UTHH
+            </span>
+            <div className="w-[6px] h-[6px] rounded-full bg-[#c9a227]" />
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#e8e4df]" />
         </div>
 
         <form onSubmit={handleSubmit} noValidate>
@@ -223,11 +277,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-2 py-[0.85rem] bg-[#722F37] text-[#fff] border-none rounded-[3px] font-sans text-[0.85rem] font-semibold tracking-[0.08em] uppercase cursor-pointer flex items-center justify-center gap-[0.55rem] transition-all duration-300 hover:bg-[#1a1a1a] hover:shadow-[0_6px_22px_rgba(0,0,0,0.18)] active:scale-[0.98] disabled:opacity-70"
-            style={isLoading ? { background: "#c9a227" } : {}}
+            className="relative w-full mt-3 py-[0.95rem] bg-gradient-to-br from-[#722F37] to-[#5a252c] text-[#fff] border-none rounded-[4px] font-sans text-[0.85rem] font-semibold tracking-[0.1em] uppercase cursor-pointer flex items-center justify-center gap-[0.55rem] transition-all duration-300 hover:shadow-[0_10px_28px_rgba(114,47,55,0.45)] hover:-translate-y-[1px] active:scale-[0.98] disabled:opacity-70 disabled:hover:transform-none overflow-hidden group"
+            style={isLoading ? { background: "linear-gradient(to bottom right, #c9a227, #a68520)" } : {}}
           >
-            <LogIn className="w-[14px] h-[14px]" />
-            {isLoading ? "Verificando..." : "Accesar"}
+            {/* Brillo animado en hover */}
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(201,162,39,0.2)] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+            <LogIn className="w-[14px] h-[14px] relative z-10" />
+            <span className="relative z-10">{isLoading ? "Verificando..." : "Accesar"}</span>
           </button>
 
           <Link

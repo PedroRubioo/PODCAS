@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Eye, Search, BookOpen, FileText, Calendar, Users } from "lucide-react"
 
 const produccion = [
@@ -16,11 +17,7 @@ const produccion = [
 export default function RepresentanteProduccionPage() {
   return (
     <DashboardLayout role="representante">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Representante institucional</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Visor de Produccion</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Consulta toda la produccion academica de los cuerpos academicos.</p>
-      </div>
+      <PageHeader eyebrow="Representante institucional" title="Visor de Produccion" subtitle="Consulta toda la produccion academica de los cuerpos academicos." />
 
       <div className="bg-[#fff] border border-[#e4ddd0] p-4 mb-[6px] flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-[360px]">

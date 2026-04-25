@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Building2, Users, BookOpen, FlaskConical, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
@@ -12,11 +13,7 @@ const cuerpos = [
 export default function DirectorCuerposPage() {
   return (
     <DashboardLayout role="director">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Director del programa</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Cuerpos Academicos</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Cuerpos academicos pertenecientes al programa educativo TIC.</p>
-      </div>
+      <PageHeader eyebrow="Director del programa" title="Cuerpos Academicos" subtitle="Cuerpos academicos pertenecientes al programa educativo TIC." />
 
       <div className="flex flex-col gap-[6px]">
         {cuerpos.map((ca, i) => (

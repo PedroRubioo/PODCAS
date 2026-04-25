@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Bell, CheckCircle, Clock, AlertTriangle, BookOpen, Building2, Users } from "lucide-react"
 
 const notificaciones = [
@@ -15,11 +16,7 @@ const notificaciones = [
 export default function DireccionNotificacionesPage() {
   return (
     <DashboardLayout role="direccion">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Direccion Academica</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Notificaciones</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Centro de notificaciones y alertas del sistema.</p>
-      </div>
+      <PageHeader eyebrow="Direccion Academica" title="Notificaciones" subtitle="Centro de notificaciones y alertas del sistema." />
 
       <div className="flex items-center gap-3 mb-6">
         <button className="px-3 py-[0.4rem] rounded-[3px] text-[0.72rem] font-semibold bg-[#0f0f0f] text-[#fff]">Todas</button>

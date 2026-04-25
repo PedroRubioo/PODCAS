@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Upload, Plus, FileText, Calendar, X, Save, Pencil } from "lucide-react"
 
 interface Produccion {
@@ -135,11 +136,7 @@ export default function MiembroProduccionPage() {
 
   return (
     <DashboardLayout role="miembro">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Docente Investigador</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Mi Producción Académica</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Registra y gestiona tu producción académica.</p>
-      </div>
+      <PageHeader eyebrow="Docente Investigador" title="Mi Producción Académica" subtitle="Registra y gestiona tu producción académica." />
 
       {/* Formulario */}
       {showForm && (

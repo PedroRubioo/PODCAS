@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { BookOpen, Search, Filter, Eye, CheckCircle, XCircle } from "lucide-react"
 
 const publicaciones = [
@@ -21,11 +22,7 @@ const estadoConfig: Record<string, { color: string; icon: React.ElementType }> =
 export default function AdminPublicacionesPage() {
   return (
     <DashboardLayout role="admin">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Administracion</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Publicaciones</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Revisa y aprueba las publicaciones de los cuerpos academicos.</p>
-      </div>
+      <PageHeader eyebrow="Administracion" title="Publicaciones" subtitle="Revisa y aprueba las publicaciones de los cuerpos academicos." />
 
       {/* Filters */}
       <div className="bg-[#fff] border border-[#e8e4df] p-4 mb-[6px] flex items-center justify-between flex-wrap gap-4">

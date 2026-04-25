@@ -1,16 +1,13 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Settings, Shield, Bell, Database, Globe, Save } from "lucide-react"
 
 export default function AdminConfiguracionPage() {
   return (
     <DashboardLayout role="admin">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Administracion</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Configuracion del Sistema</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Ajustes generales y preferencias del sistema.</p>
-      </div>
+      <PageHeader eyebrow="Administracion" title="Configuracion del Sistema" subtitle="Ajustes generales y preferencias del sistema." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[6px]">
         {/* General */}

@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Users, Mail, Building2, Send } from "lucide-react"
 import { useState } from "react"
 
@@ -43,11 +44,7 @@ export default function MiembroContactarPage() {
 
   return (
     <DashboardLayout role="miembro">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Docente Investigador</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Contactar Cuerpos Academicos</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Envia un mensaje a miembros de otros cuerpos academicos.</p>
-      </div>
+      <PageHeader eyebrow="Docente Investigador" title="Contactar Cuerpos Academicos" subtitle="Envia un mensaje a miembros de otros cuerpos academicos." />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[6px]">
         {/* CA List */}

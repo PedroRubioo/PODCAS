@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { StatCard } from "@/components/stat-card"
 import { BarChart3, Download, Users, BookOpen, Building2, TrendingUp } from "lucide-react"
 
@@ -23,11 +24,7 @@ const reportesDisponibles = [
 export default function AdminReportesPage() {
   return (
     <DashboardLayout role="admin">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Administracion</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Reportes y Estadisticas</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Genera y consulta reportes del sistema.</p>
-      </div>
+      <PageHeader eyebrow="Administracion" title="Reportes y Estadisticas" subtitle="Genera y consulta reportes del sistema." />
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[6px] mb-8">

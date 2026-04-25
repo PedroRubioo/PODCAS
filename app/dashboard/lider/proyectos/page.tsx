@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { FolderOpen, Plus, Users, Calendar, ArrowRight } from "lucide-react"
 
 const proyectos = [
@@ -36,11 +37,7 @@ const proyectos = [
 export default function LiderProyectosPage() {
   return (
     <DashboardLayout role="lider">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">UTHH-CA-7</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Proyectos</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Gestiona los proyectos de investigacion del cuerpo academico.</p>
-      </div>
+      <PageHeader eyebrow="UTHH-CA-7" title="Proyectos" subtitle="Gestiona los proyectos de investigacion del cuerpo academico." />
 
       <div className="flex items-center justify-between mb-6">
         <p className="text-[0.82rem] text-[#6b6b6b]">{proyectos.length} proyectos registrados</p>

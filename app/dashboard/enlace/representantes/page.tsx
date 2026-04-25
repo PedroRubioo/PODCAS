@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { UserCheck, Plus, X, Save } from "lucide-react"
 import { useEffect, useState } from "react"
 
@@ -92,11 +93,7 @@ export default function RepresentantesPage() {
 
   return (
     <DashboardLayout role="enlace">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Enlace Académico</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Representantes de C.A.</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Gestiona quién es representante en cada cuerpo académico.</p>
-      </div>
+      <PageHeader eyebrow="Enlace Académico" title="Representantes de C.A." subtitle="Gestiona quién es representante en cada cuerpo académico." />
 
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-[0.82rem] text-red-600">{error}</div>

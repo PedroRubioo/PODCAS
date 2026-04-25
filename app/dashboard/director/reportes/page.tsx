@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { BarChart3, FileText, Download, Building2, BookOpen, Users, TrendingUp } from "lucide-react"
 
 const reportes = [
@@ -21,11 +22,7 @@ const indicadores = [
 export default function DirectorReportesPage() {
   return (
     <DashboardLayout role="director">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Director del programa</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Reportes</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Generacion y consulta de reportes de produccion academica.</p>
-      </div>
+      <PageHeader eyebrow="Director del programa" title="Reportes" subtitle="Generacion y consulta de reportes de produccion academica." />
 
       {/* Indicadores */}
       <div className="bg-[#fff] border border-[#e4ddd0] p-6 mb-8">

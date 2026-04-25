@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Users, Search, Plus, X, ChevronDown } from "lucide-react"
 
 interface Usuario {
@@ -155,11 +156,7 @@ export default function AdminUsuariosPage() {
 
   return (
     <DashboardLayout role="admin">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Administracion</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Gestion de Usuarios</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Administra los usuarios registrados en el sistema.</p>
-      </div>
+      <PageHeader eyebrow="Administracion" title="Gestion de Usuarios" subtitle="Administra los usuarios registrados en el sistema." />
 
       {/* Toolbar */}
       <div className="bg-[#fff] border border-[#e8e4df] p-4 mb-[6px] flex items-center justify-between flex-wrap gap-4">

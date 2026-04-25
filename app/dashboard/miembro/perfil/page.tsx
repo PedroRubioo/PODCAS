@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { UserCog, Mail, GraduationCap, Building2, Save, Phone, Calendar, Award } from "lucide-react"
 
 interface Catalogo { value: string; label: string }
@@ -81,11 +82,7 @@ export default function MiembroPerfilPage() {
 
   return (
     <DashboardLayout role="miembro">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Docente Investigador</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Mi Perfil</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Actualiza tu información personal y académica.</p>
-      </div>
+      <PageHeader eyebrow="Docente Investigador" title="Mi Perfil" subtitle="Actualiza tu información personal y académica." />
 
       {loadError && (
         <div className="mb-4 text-[0.78rem] px-3 py-2 rounded-[3px] bg-red-50 border border-red-200 text-red-600">

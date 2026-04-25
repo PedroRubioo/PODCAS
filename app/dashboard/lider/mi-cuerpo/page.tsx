@@ -1,16 +1,13 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Building2, Users, BookOpen, FolderOpen, FlaskConical, Calendar, MapPin, Award } from "lucide-react"
 
 export default function LiderMiCuerpoPage() {
   return (
     <DashboardLayout role="lider">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">UTHH-CA-7</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Tecnologias de Informacion y Comunicacion</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Informacion general de tu cuerpo academico.</p>
-      </div>
+      <PageHeader eyebrow="UTHH-CA-7" title="Tecnologias de Informacion y Comunicacion" subtitle="Informacion general de tu cuerpo academico." />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[6px] mb-8">
         {/* Info Principal */}

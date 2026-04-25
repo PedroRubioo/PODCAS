@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { BookOpen, Search, Eye, Calendar, Users } from "lucide-react"
 
 const publicaciones = [
@@ -17,11 +18,7 @@ const publicaciones = [
 export default function ExternoPublicacionesPage() {
   return (
     <DashboardLayout role="externo">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Acceso externo</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Publicaciones</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Consulta la produccion academica disponible de los cuerpos academicos de la UTHH.</p>
-      </div>
+      <PageHeader eyebrow="Acceso externo" title="Publicaciones" subtitle="Consulta la produccion academica disponible de los cuerpos academicos de la UTHH." />
 
       <div className="bg-[#fff] border border-[#e4ddd0] p-4 mb-[6px] flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-[400px]">

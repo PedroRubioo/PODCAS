@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { GraduationCap, Users, BookOpen, Building2, Calendar, MapPin, Award, FlaskConical } from "lucide-react"
 
 const integrantes = [
@@ -18,11 +19,7 @@ const lgac = [
 export default function DirectorProgramaPage() {
   return (
     <DashboardLayout role="director">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Director del programa</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Programa Educativo: TIC</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Informacion general del programa educativo y sus recursos academicos.</p>
-      </div>
+      <PageHeader eyebrow="Director del programa" title="Programa Educativo: TIC" subtitle="Informacion general del programa educativo y sus recursos academicos." />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[6px] mb-8">
         <div className="lg:col-span-2 bg-[#fff] border border-[#e4ddd0] p-6">

@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { StatCard } from "@/components/stat-card"
 import { Users, BookOpen, FolderOpen, FlaskConical, FileText, Plus, UserCheck, Building2 } from "lucide-react"
 import Link from "next/link"
@@ -25,11 +26,7 @@ const proyectos = [
 export default function LiderDashboard() {
   return (
     <DashboardLayout role="lider">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Cuerpo Academico UTHH-CA-7</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">Tecnologias de Informacion y Comunicacion</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Linea: Aplicacion de las TIC en la Region</p>
-      </div>
+      <PageHeader eyebrow="Cuerpo Academico UTHH-CA-7" title="Tecnologias de Informacion y Comunicacion" subtitle="Linea: Aplicacion de las TIC en la Region" />
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[6px] mb-8">

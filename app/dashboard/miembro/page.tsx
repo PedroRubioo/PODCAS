@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { StatCard } from "@/components/stat-card"
 import { BookOpen, FileText, Upload, UserCog, Users, Building2, FolderOpen } from "lucide-react"
 import Link from "next/link"
@@ -35,17 +36,12 @@ export default function MiembroDashboard() {
 
   return (
     <DashboardLayout role="miembro">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">
-          {data ? `Docente Investigador de ${data.nombreCA}` : "Docente Investigador"}
-        </span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#722F37] leading-tight">
-          {data ? `Bienvenido, ${data.nombre}` : "Cargando..."}
-        </h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">
-          {data?.departamento ?? ""}
-        </p>
-      </div>
+      <PageHeader
+        eyebrow={data ? `Docente Investigador · ${data.nombreCA}` : "Docente Investigador"}
+        title={data ? "Bienvenido," : "Cargando..."}
+        accent={data ? data.nombre : undefined}
+        subtitle={data?.departamento ?? ""}
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[6px] mb-8">
         <StatCard icon={FileText} label="Producción académica" value={String(data?.totalProduccion ?? "—")} sub="Registros totales" />

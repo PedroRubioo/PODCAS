@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Building2, Users, BookOpen, TrendingUp, Eye } from "lucide-react"
 import Link from "next/link"
 
@@ -22,11 +23,7 @@ const gradoColor: Record<string, string> = {
 export default function DireccionCuerposPage() {
   return (
     <DashboardLayout role="direccion">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Direccion Academica</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Cuerpos Academicos</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Seguimiento y evaluacion de cuerpos academicos institucionales.</p>
-      </div>
+      <PageHeader eyebrow="Direccion Academica" title="Cuerpos Academicos" subtitle="Seguimiento y evaluacion de cuerpos academicos institucionales." />
 
       <div className="grid grid-cols-1 gap-[6px]">
         {cuerpos.map((ca) => (

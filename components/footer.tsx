@@ -2,12 +2,38 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="bg-[#722F37] text-[rgba(255,255,255,0.7)] pt-[4.5rem] pb-8 border-t border-[rgba(201,162,39,0.25)]">
-      <div className="max-w-[1240px] mx-auto px-8">
+    <footer className="bg-gradient-to-b from-[#722F37] to-[#5a252c] text-[rgba(255,255,255,0.72)] pt-[5rem] pb-8 border-t border-[rgba(201,162,39,0.3)] relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#c9a227] to-transparent" />
+      {/* Patrón decorativo sutil */}
+      <div
+        aria-hidden
+        className="absolute top-10 right-0 w-[260px] h-[260px] opacity-[0.05] pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, #c9a227 1px, transparent 1.5px)",
+          backgroundSize: "20px 20px",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute bottom-10 left-0 w-[180px] h-[180px] opacity-[0.05] pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, #c9a227 1px, transparent 1.5px)",
+          backgroundSize: "20px 20px",
+        }}
+      />
+      <div className="max-w-[1240px] mx-auto px-8 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-12 pb-12 border-b border-[rgba(255,255,255,0.12)]">
           {/* Brand */}
           <div>
-            <p className="font-serif text-[1.4rem] text-[#fff] font-bold mb-5">UTHH</p>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#c9a227] to-[#a68520] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.25)] shrink-0 border border-[rgba(255,255,255,0.15)]">
+                <span className="font-serif text-[0.7rem] font-bold text-[#722F37] tracking-[0.08em]">UTHH</span>
+              </div>
+              <div className="leading-tight">
+                <p className="font-serif text-[1.02rem] text-[#fff] font-bold">Universidad Tecnológica</p>
+                <p className="text-[0.72rem] text-[rgba(201,162,39,0.9)] tracking-[0.08em] uppercase">de la Huasteca Hidalguense</p>
+              </div>
+            </div>
             <p className="text-[0.83rem] leading-[1.85] mb-3">
               Carretera Huejutla-Chalahuiyapa S/N,<br />
               Col. Tepoxteco, Huejutla de Reyes,<br />
@@ -39,13 +65,16 @@ export function Footer() {
 
           {/* Navegacion */}
           <div>
-            <h4 className="text-[0.72rem] tracking-[0.16em] uppercase text-[#fff] font-semibold mb-5">Navegacion</h4>
+            <h4 className="text-[0.72rem] tracking-[0.16em] uppercase text-[#fff] font-semibold mb-5 flex items-center gap-2">
+              <span className="w-[10px] h-[2px] bg-[#c9a227] rounded" />
+              Navegación
+            </h4>
             <ul className="list-none">
               {[
                 { label: "Inicio", href: "/" },
-                { label: "Cuerpos Academicos", href: "/cuerpos-academicos" },
+                { label: "Cuerpos Académicos", href: "/cuerpos-academicos" },
                 { label: "Publicaciones", href: "/publicaciones" },
-                { label: "Iniciar sesion", href: "/login" },
+                { label: "Iniciar sesión", href: "/login" },
               ].map((item) => (
                 <li key={item.href} className="mb-[0.65rem]">
                   <Link href={item.href} className="text-[0.83rem] text-[rgba(255,255,255,0.6)] no-underline transition-colors duration-300 hover:text-[#c9a227]">
@@ -58,7 +87,10 @@ export function Footer() {
 
           {/* Investigacion */}
           <div>
-            <h4 className="text-[0.72rem] tracking-[0.16em] uppercase text-[#fff] font-semibold mb-5">Investigacion</h4>
+            <h4 className="text-[0.72rem] tracking-[0.16em] uppercase text-[#fff] font-semibold mb-5 flex items-center gap-2">
+              <span className="w-[10px] h-[2px] bg-[#c9a227] rounded" />
+              Investigación
+            </h4>
             <ul className="list-none">
               {["PRODEP", "CONACYT", "ResearchGate", "Academia.edu"].map((item) => (
                 <li key={item} className="mb-[0.65rem]">
@@ -72,9 +104,12 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="text-[0.72rem] tracking-[0.16em] uppercase text-[#fff] font-semibold mb-5">Legal</h4>
+            <h4 className="text-[0.72rem] tracking-[0.16em] uppercase text-[#fff] font-semibold mb-5 flex items-center gap-2">
+              <span className="w-[10px] h-[2px] bg-[#c9a227] rounded" />
+              Legal
+            </h4>
             <ul className="list-none">
-              {["Aviso de privacidad", "Terminos de uso", "Politica de cookies"].map((item) => (
+              {["Aviso de privacidad", "Términos de uso", "Política de cookies"].map((item) => (
                 <li key={item} className="mb-[0.65rem]">
                   <Link href="#" className="text-[0.83rem] text-[rgba(255,255,255,0.6)] no-underline transition-colors duration-300 hover:text-[#c9a227]">
                     {item}
@@ -86,8 +121,8 @@ export function Footer() {
         </div>
 
         <div className="pt-8 text-center">
-          <p className="text-[0.78rem] text-[rgba(255,255,255,0.45)]">
-            &copy; {new Date().getFullYear()} <strong className="text-[rgba(201,162,39,0.9)] font-medium">Universidad Tecnologica de la Huasteca Hidalguense</strong>. Todos los derechos reservados.
+          <p className="text-[0.78rem] text-[rgba(255,255,255,0.5)]">
+            &copy; {new Date().getFullYear()} <strong className="text-[rgba(201,162,39,0.95)] font-medium">Universidad Tecnológica de la Huasteca Hidalguense</strong>. Todos los derechos reservados.
           </p>
         </div>
       </div>

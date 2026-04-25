@@ -169,17 +169,32 @@ export default function CuerposAcademicosClient({
   return (
     <>
       {/* PAGE HEADER */}
-      <div className="pt-[7rem] pb-14 bg-[#722F37] border-b border-[rgba(183,140,51,0.18)]">
-        <div className="max-w-[1240px] mx-auto px-8">
+      <div className="pt-[7rem] pb-14 bg-gradient-to-b from-[#722F37] to-[#5a252c] border-b border-[rgba(183,140,51,0.25)] relative overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#c9a227] to-transparent"
+        />
+        <div
+          aria-hidden
+          className="absolute top-[20px] right-[5%] w-[180px] h-[180px] opacity-[0.12] pointer-events-none hidden md:block"
+          style={{
+            backgroundImage: "radial-gradient(circle, #c9a227 1px, transparent 1.5px)",
+            backgroundSize: "16px 16px",
+          }}
+        />
+        <div className="max-w-[1240px] mx-auto px-8 relative">
           <div>
-            <span className="text-[0.72rem] font-semibold tracking-[0.2em] uppercase text-[#c9a227] block mb-[0.6rem]">
-              Investigacion & Ciencia
-            </span>
-            <h1 className="font-serif text-[clamp(2rem,3.5vw,3rem)] font-bold text-[#fff] leading-[1.12]">
-              Cuerpos Academicos
+            <div className="flex items-center gap-3 mb-3">
+              <span className="w-10 h-[2px] bg-[#c9a227] rounded" />
+              <span className="text-[0.72rem] font-semibold tracking-[0.22em] uppercase text-[#c9a227]">
+                Investigación &amp; Ciencia
+              </span>
+            </div>
+            <h1 className="font-serif text-[clamp(2.1rem,3.8vw,3.2rem)] font-bold text-[#fff] leading-[1.1] tracking-[-0.01em]">
+              Cuerpos <em className="italic text-[#c9a227] font-normal">Académicos</em>
             </h1>
-            <p className="text-[0.9rem] text-[rgba(255,255,255,0.5)] mt-[0.6rem] font-light">
-              Conoce los cuerpos academicos de la Universidad Tecnologica de la
+            <p className="text-[0.92rem] text-[rgba(255,255,255,0.68)] mt-[0.7rem] font-light max-w-[620px] leading-[1.65]">
+              Conoce los cuerpos académicos de la Universidad Tecnológica de la
               Huasteca Hidalguense.
             </p>
           </div>
@@ -383,7 +398,7 @@ export default function CuerposAcademicosClient({
                 UTHH
               </span>
               <h2 className="font-serif text-[clamp(1.7rem,2.5vw,2.2rem)] font-bold text-[#722F37] leading-[1.15]">
-                Todos los Cuerpos Academicos
+                Todos los <em className="italic text-[#c9a227] font-normal">Cuerpos Académicos</em>
               </h2>
               <div className="w-11 h-[3px] bg-[#c9a227] rounded-[2px] mt-[0.9rem]" />
             </div>

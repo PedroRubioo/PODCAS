@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { Users, Mail, GraduationCap, Building2, Search, BookOpen } from "lucide-react"
 
 const investigadores = [
@@ -17,11 +18,7 @@ const investigadores = [
 export default function ExternoDirectorioPage() {
   return (
     <DashboardLayout role="externo">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Acceso externo</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Directorio de Investigadores</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Consulta los perfiles de los investigadores de la UTHH.</p>
-      </div>
+      <PageHeader eyebrow="Acceso externo" title="Directorio de Investigadores" subtitle="Consulta los perfiles de los investigadores de la UTHH." />
 
       <div className="bg-[#fff] border border-[#e4ddd0] p-4 mb-[6px]">
         <div className="relative max-w-[400px]">

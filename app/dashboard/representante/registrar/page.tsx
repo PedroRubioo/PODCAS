@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { UserCheck, Plus, Building2, Mail, Users } from "lucide-react"
 
 const representantes = [
@@ -16,11 +17,7 @@ const representantes = [
 export default function RepresentanteRegistrarPage() {
   return (
     <DashboardLayout role="representante">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#c9a227] block mb-2">Representante institucional</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#691B31] leading-tight">Registrar Representantes</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Gestiona los lideres y representantes de cada cuerpo academico.</p>
-      </div>
+      <PageHeader eyebrow="Representante institucional" title="Registrar Representantes" subtitle="Gestiona los lideres y representantes de cada cuerpo academico." />
 
       <div className="flex items-center justify-between mb-6">
         <p className="text-[0.82rem] text-[#6b6b6b]">{representantes.length} representantes registrados</p>

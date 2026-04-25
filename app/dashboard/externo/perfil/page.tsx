@@ -1,16 +1,13 @@
 "use client"
 
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { PageHeader } from "@/components/page-header"
 import { UserCog, Mail, Building2, Save } from "lucide-react"
 
 export default function ExternoPerfilPage() {
   return (
     <DashboardLayout role="externo">
-      <div className="mb-8">
-        <span className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-[#b78c33] block mb-2">Acceso externo</span>
-        <h1 className="font-serif text-[1.8rem] font-bold text-[#0f0f0f] leading-tight">Mi Perfil</h1>
-        <p className="text-[0.85rem] text-[#6b6b6b] mt-1">Actualiza tu informacion personal.</p>
-      </div>
+      <PageHeader eyebrow="Acceso externo" title="Mi Perfil" subtitle="Actualiza tu informacion personal." />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[6px]">
         <div className="bg-[#fff] border border-[#e4ddd0] p-6">
